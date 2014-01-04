@@ -36,7 +36,7 @@ Output
 
     a7bac2239fcdcb3a067903d8077c4a07
 
-## Run Tests
+## Tests
 You can open `tests/index.html` in browser or use node.js to run `node tests/node-test.js` for test.
 
 You also could use `npm test` instance of `node tests/node-test.js`.
@@ -64,5 +64,5 @@ And then you could use like this:
     'message'.md5();
 
 ## Contact
-The project's website is located at https://github.com/emn178/js-md5
+The project's website is located at https://github.com/emn178/js-md5  
 Author: emn178@gmail.com
