@@ -1,7 +1,18 @@
 # js-md5
 This is a simple MD5 hash function for JavaScript supports UTF-8 encoding.
 
+## Install
+For node.js, you can use this command to install:
+
+    npm install js-md5
+
 ## Usage
+If you use node.js, you should require the module first:
+
+    var md5 = require('js-md5');
+
+And you could use like this:
+
     md5('Message to hash');
 
 ## Example
@@ -28,6 +39,8 @@ Output
 ## Run Tests
 You can open `tests/index.html` in browser or use node.js to run `node tests/node-test.js` for test.
 
+You also could use `npm test` instance of `node tests/node-test.js`.
+
 ## Extensions
 ### jQuery
 If you prefer jQuery style, you can add following code to add a jQuery extension.
@@ -49,3 +62,7 @@ Code
 And then you could use like this:
 
     'message'.md5();
+
+## Contact
+The project's website is located at https://github.com/emn178/js-md5
+Author: emn178@gmail.com

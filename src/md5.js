@@ -1,4 +1,6 @@
-(function(window, undefined){
+(function(root, undefined){
+  'use strict';
+
   var HEX_CHARS = "0123456789abcdef";
   var HEX_TABLE = {
     '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
@@ -28,7 +30,7 @@
            0X6FA87E4F, 0XFE2CE6E0, 0XA3014314, 0X4E0811A1,
            0XF7537E82, 0XBD3AF235, 0X2AD7D2BB, 0XEB86D391];
 
-  window.md5 = function(message) {
+  var md5 = function(message) {
     var blocks = hasUTF8(message) ? UTF8toBlocks(message) : ASCIItoBlocks(message);
     var h0 = 0x67452301;
     var h1 = 0xEFCDAB89;
@@ -141,4 +143,9 @@
     blocks[blockCount - 2] = bytes << 3; // bytes * 8
     return blocks;
   };
-}(window));
+
+  if(typeof(module) != 'undefined')
+    module.exports = md5;
+  else if(root)
+    root.md5 = md5;
+}(this));
