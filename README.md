@@ -26,7 +26,7 @@ Output
     a7bac2239fcdcb3a067903d8077c4a07
 
 ## Run Tests
-You can open `tests/index.html` in browser or use node.js to run `node node-test.js` for test.
+You can open `tests/index.html` in browser or use node.js to run `node tests/node-test.js` for test.
 
 ## Extensions
 ### jQuery
@@ -37,7 +37,7 @@ Code
     jQuery.md5 = md5
 And then you could use like this:
 
-    $.md5('');
+    $.md5('message');
 ### Prototype
 If you prefer prototype style, you can add following code to add a prototype extension.
 
@@ -48,4 +48,4 @@ Code
     };
 And then you could use like this:
 
-    ''.md5();
+    'message'.md5();
