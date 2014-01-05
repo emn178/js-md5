@@ -1,3 +1,13 @@
+/*
+ * js-md5 v0.1.1
+ * https://github.com/emn178/js-md5
+ *
+ * Copyright 2014, emn178@gmail.com
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
 (function(root, undefined){
   'use strict';
 

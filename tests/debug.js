@@ -1,4 +1,4 @@
-(function(root){
+(function(root) {
   var assert = function (title, expect, actual) {
     if(expect == actual)
       console.log(title + ': true');

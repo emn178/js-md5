@@ -1,6 +1,6 @@
 {
   "name": "js-md5",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple MD5 hash function for JavaScript supports UTF-8 encoding.",
   "main": "src/md5.js",
   "scripts": {
@@ -13,8 +13,11 @@
   "keywords": [
     "md5",
     "hash",
-    "encryption"
+    "encryption",
+    "cryptography",
+    "HMAC"
   ],
+  "license": "MIT",
   "author": "emn178 <emn178@gmail.com>",
   "homepage": "https://github.com/emn178/js-md5",
   "bugs": {
