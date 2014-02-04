@@ -1,5 +1,5 @@
 # js-md5
-This is a simple MD5 hash function for JavaScript supports UTF-8 encoding.
+A simple MD5 hash function for JavaScript supports UTF-8 encoding.
 
 ## Install
 For node.js, you can use this command to install:
