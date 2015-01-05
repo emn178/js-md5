@@ -14,7 +14,7 @@ A simple MD5 hash function for JavaScript supports UTF-8 encoding.
 ## Install
 You can also install js-md5 by using Bower.
 
-    bower install js-md5
+    bower install md5
 
 For node.js, you can use this command to install:
 
