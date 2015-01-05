@@ -8,5 +8,5 @@ install:
   - npm install mocha -g
   - npm install coveralls -g
   - npm install mocha-lcov-reporter -g
-script:
+after_script:
   - npm run-script coveralls
