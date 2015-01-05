@@ -1,0 +1,9 @@
+{
+  "name": "js-md5",
+  "version": "0.1.3",
+  "main": ["build/md5.min.js"],
+  "ignore": [
+    "samples",
+    "tests"
+  ]
+}

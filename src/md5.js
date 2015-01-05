@@ -1,161 +1,266 @@
 /*
- * js-md5 v0.1.2
+ * js-md5 v0.1.3
  * https://github.com/emn178/js-md5
  *
- * Copyright 2014, emn178@gmail.com
+ * Copyright 2014-2015, emn178@gmail.com
  *
  * Licensed under the MIT license:
  * http://www.opensource.org/licenses/MIT
  */
-
-(function(root, undefined){
+;(function(root, undefined) {
   'use strict';
 
-  var HEX_CHARS = "0123456789abcdef";
-  var HEX_TABLE = {
-    '0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
-    'a': 10, 'b': 11, 'c': 12, 'd': 13, 'e': 14, 'f': 15,
-    'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15
-  };
+  var HEX_CHARS = '0123456789abcdef'.split('');
 
-  var R = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
-           5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20, 5,  9, 14, 20,
-           4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-           6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21];
-
-  var K = [0XD76AA478, 0XE8C7B756, 0X242070DB, 0XC1BDCEEE,
-           0XF57C0FAF, 0X4787C62A, 0XA8304613, 0XFD469501,
-           0X698098D8, 0X8B44F7AF, 0XFFFF5BB1, 0X895CD7BE,
-           0X6B901122, 0XFD987193, 0XA679438E, 0X49B40821,
-           0XF61E2562, 0XC040B340, 0X265E5A51, 0XE9B6C7AA,
-           0XD62F105D, 0X02441453, 0XD8A1E681, 0XE7D3FBC8,
-           0X21E1CDE6, 0XC33707D6, 0XF4D50D87, 0X455A14ED,
-           0XA9E3E905, 0XFCEFA3F8, 0X676F02D9, 0X8D2A4C8A,
-           0XFFFA3942, 0X8771F681, 0X6D9D6122, 0XFDE5380C,
-           0XA4BEEA44, 0X4BDECFA9, 0XF6BB4B60, 0XBEBFBC70,
-           0X289B7EC6, 0XEAA127FA, 0XD4EF3085, 0X04881D05,
-           0XD9D4D039, 0XE6DB99E5, 0X1FA27CF8, 0XC4AC5665,
-           0XF4292244, 0X432AFF97, 0XAB9423A7, 0XFC93A039,
-           0X655B59C3, 0X8F0CCC92, 0XFFEFF47D, 0X85845DD1,
-           0X6FA87E4F, 0XFE2CE6E0, 0XA3014314, 0X4E0811A1,
-           0XF7537E82, 0XBD3AF235, 0X2AD7D2BB, 0XEB86D391];
-
-  var md5 = function(message) {
-    var blocks = hasUTF8(message) ? UTF8toBlocks(message) : ASCIItoBlocks(message);
-    var h0 = 0x67452301;
-    var h1 = 0xEFCDAB89;
-    var h2 = 0x98BADCFE;
-    var h3 = 0x10325476;
-
-    for(var i = 0, length = blocks.length;i < length;i += 16)
-    {
-      var a = h0;
-      var b = h1;
-      var c = h2;
-      var d = h3;
-      var f, g, tmp, x, y;
-
-      for(var j = 0;j < 64;++j)
-      {
-        if(j < 16)
-        {
-          // f = (b & c) | ((~b) & d);
-          f = d ^ (b & (c ^ d));
-          g = j;
-        }
-        else if(j < 32)
-        {
-          // f = (d & b) | ((~d) & c);
-          f = c ^ (d & (b ^ c));
-          g = (5 * j + 1) % 16;
-        }
-        else if(j < 48)
-        {
-          f = b ^ c ^ d;
-          g = (3 * j + 5) % 16;
-        }
-        else
-        {
-          f = c ^ (b | (~d));
-          g = (7 * j) % 16;
-        }
-
-        tmp = d;
-        d = c
-        c = b
-
-        // leftrotate
-        x = (a + f + K[j] + blocks[i + g]);
-        y = R[j];
-        b += (x << y) | (x >>> (32 - y));
-        a = tmp;
-      }
-      h0 = (h0 + a) | 0;
-      h1 = (h1 + b) | 0;
-      h2 = (h2 + c) | 0;
-      h3 = (h3 + d) | 0;
+  var md5 = function(message, asciiOnly) {
+    var blocks, h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, 
+        a, b, c, d, bc, da;
+    if(!asciiOnly && /[^\x00-\x7F]/.test(message)) {
+      blocks = getBlocksFromUtf8(message);
+    } else {
+      blocks = getBlocksFromAscii(message);
     }
+    for(var i = 0, length = blocks.length;i < length;i += 16) {
+      if(i === 0) {
+        a = blocks[i + 0] - 680876937;
+        a = ((a << 7 | a >>> 25) - 271733879) << 0;
+        d = blocks[i + 1] - 117830708 + ((2004318071 & a) ^ -1732584194);
+        d = ((d << 12 | d >>> 20) + a) << 0;
+        c = blocks[i + 2] - 1126478375 + (((a ^ -271733879) & d) ^ -271733879);
+        c = ((c << 17 | c >>> 15) + d) << 0;
+        b = blocks[i + 3] - 1316259209 + (((d ^ a) & c) ^ a);
+        b = ((b << 22 | b >>> 10) + c) << 0;
+      } else {
+        a = h0;
+        b = h1;
+        c = h2;
+        d = h3;
+        a += (d ^ (b & (c ^ d))) + blocks[i + 0] - 680876936;
+        a = ((a << 7 | a >>> 25) + b) << 0;
+        d += (c ^ (a & (b ^ c))) + blocks[i + 1] - 389564586;
+        d = ((d << 12 | d >>> 20) + a) << 0;
+        c += (b ^ (d & (a ^ b))) + blocks[i + 2] + 606105819;
+        c = ((c << 17 | c >>> 15) + d) << 0;
+        b += (a ^ (c & (d ^ a))) + blocks[i + 3] - 1044525330;
+        b = ((b << 22 | b >>> 10) + c) << 0;
+      }
+
+      a += (d ^ (b & (c ^ d))) + blocks[i + 4] - 176418897;
+      a = ((a << 7 | a >>> 25) + b) << 0;
+      d += (c ^ (a & (b ^ c))) + blocks[i + 5] + 1200080426;
+      d = ((d << 12 | d >>> 20) + a) << 0;
+      c += (b ^ (d & (a ^ b))) + blocks[i + 6] - 1473231341;
+      c = ((c << 17 | c >>> 15) + d) << 0;
+      b += (a ^ (c & (d ^ a))) + blocks[i + 7] - 45705983;
+      b = ((b << 22 | b >>> 10) + c) << 0;
+      a += (d ^ (b & (c ^ d))) + blocks[i + 8] + 1770035416;
+      a = ((a << 7 | a >>> 25) + b) << 0;
+      d += (c ^ (a & (b ^ c))) + blocks[i + 9] - 1958414417;
+      d = ((d << 12 | d >>> 20) + a) << 0;
+      c += (b ^ (d & (a ^ b))) + blocks[i + 10] - 42063;
+      c = ((c << 17 | c >>> 15) + d) << 0;
+      b += (a ^ (c & (d ^ a))) + blocks[i + 11] - 1990404162;
+      b = ((b << 22 | b >>> 10) + c) << 0;
+      a += (d ^ (b & (c ^ d))) + blocks[i + 12] + 1804603682;
+      a = ((a << 7 | a >>> 25) + b) << 0;
+      d += (c ^ (a & (b ^ c))) + blocks[i + 13] - 40341101;
+      d = ((d << 12 | d >>> 20) + a) << 0;
+      c += (b ^ (d & (a ^ b))) + blocks[i + 14] - 1502002290;
+      c = ((c << 17 | c >>> 15) + d) << 0;
+      b += (a ^ (c & (d ^ a))) + blocks[i + 15] + 1236535329;
+      b = ((b << 22 | b >>> 10) + c) << 0;
+      a += (c ^ (d & (b ^ c))) + blocks[i + 1] - 165796510;
+      a = ((a << 5 | a >>> 27) + b) << 0;
+      d += (b ^ (c & (a ^ b))) + blocks[i + 6] - 1069501632;
+      d = ((d << 9 | d >>> 23) + a) << 0;
+      c += (a ^ (b & (d ^ a))) + blocks[i + 11] + 643717713;
+      c = ((c << 14 | c >>> 18) + d) << 0;
+      b += (d ^ (a & (c ^ d))) + blocks[i + 0] - 373897302;
+      b = ((b << 20 | b >>> 12) + c) << 0;
+      a += (c ^ (d & (b ^ c))) + blocks[i + 5] - 701558691;
+      a = ((a << 5 | a >>> 27) + b) << 0;
+      d += (b ^ (c & (a ^ b))) + blocks[i + 10] + 38016083;
+      d = ((d << 9 | d >>> 23) + a) << 0;
+      c += (a ^ (b & (d ^ a))) + blocks[i + 15] - 660478335;
+      c = ((c << 14 | c >>> 18) + d) << 0;
+      b += (d ^ (a & (c ^ d))) + blocks[i + 4] - 405537848;
+      b = ((b << 20 | b >>> 12) + c) << 0;
+      a += (c ^ (d & (b ^ c))) + blocks[i + 9] + 568446438;
+      a = ((a << 5 | a >>> 27) + b) << 0;
+      d += (b ^ (c & (a ^ b))) + blocks[i + 14] - 1019803690;
+      d = ((d << 9 | d >>> 23) + a) << 0;
+      c += (a ^ (b & (d ^ a))) + blocks[i + 3] - 187363961;
+      c = ((c << 14 | c >>> 18) + d) << 0;
+      b += (d ^ (a & (c ^ d))) + blocks[i + 8] + 1163531501;
+      b = ((b << 20 | b >>> 12) + c) << 0;
+      a += (c ^ (d & (b ^ c))) + blocks[i + 13] - 1444681467;
+      a = ((a << 5 | a >>> 27) + b) << 0;
+      d += (b ^ (c & (a ^ b))) + blocks[i + 2] - 51403784;
+      d = ((d << 9 | d >>> 23) + a) << 0;
+      c += (a ^ (b & (d ^ a))) + blocks[i + 7] + 1735328473;
+      c = ((c << 14 | c >>> 18) + d) << 0;
+      b += (d ^ (a & (c ^ d))) + blocks[i + 12] - 1926607734;
+      b = ((b << 20 | b >>> 12) + c) << 0;
+      bc = b ^ c;
+      a += (bc ^ d) + blocks[i + 5] - 378558;
+      a = ((a << 4 | a >>> 28) + b) << 0;
+      bc = b ^ c;
+      d += (bc ^ a) + blocks[i + 8] - 2022574463;
+      d = ((d << 11 | d >>> 21) + a) << 0;
+      da = d ^ a;
+      c += (da ^ b) + blocks[i + 11] + 1839030562;
+      c = ((c << 16 | c >>> 16) + d) << 0;
+      da = d ^ a;
+      b += (da ^ c) + blocks[i + 14] - 35309556;
+      b = ((b << 23 | b >>> 9) + c) << 0;
+      bc = b ^ c;
+      a += (bc ^ d) + blocks[i + 1] - 1530992060;
+      a = ((a << 4 | a >>> 28) + b) << 0;
+      bc = b ^ c;
+      d += (bc ^ a) + blocks[i + 4] + 1272893353;
+      d = ((d << 11 | d >>> 21) + a) << 0;
+      da = d ^ a;
+      c += (da ^ b) + blocks[i + 7] - 155497632;
+      c = ((c << 16 | c >>> 16) + d) << 0;
+      da = d ^ a;
+      b += (da ^ c) + blocks[i + 10] - 1094730640;
+      b = ((b << 23 | b >>> 9) + c) << 0;
+      bc = b ^ c;
+      a += (bc ^ d) + blocks[i + 13] + 681279174;
+      a = ((a << 4 | a >>> 28) + b) << 0;
+      bc = b ^ c;
+      d += (bc ^ a) + blocks[i + 0] - 358537222;
+      d = ((d << 11 | d >>> 21) + a) << 0;
+      da = d ^ a;
+      c += (da ^ b) + blocks[i + 3] - 722521979;
+      c = ((c << 16 | c >>> 16) + d) << 0;
+      da = d ^ a;
+      b += (da ^ c) + blocks[i + 6] + 76029189;
+      b = ((b << 23 | b >>> 9) + c) << 0;
+      bc = b ^ c;
+      a += (bc ^ d) + blocks[i + 9] - 640364487;
+      a = ((a << 4 | a >>> 28) + b) << 0;
+      bc = b ^ c;
+      d += (bc ^ a) + blocks[i + 12] - 421815835;
+      d = ((d << 11 | d >>> 21) + a) << 0;
+      da = d ^ a;
+      c += (da ^ b) + blocks[i + 15] + 530742520;
+      c = ((c << 16 | c >>> 16) + d) << 0;
+      da = d ^ a;
+      b += (da ^ c) + blocks[i + 2] - 995338651;
+      b = ((b << 23 | b >>> 9) + c) << 0;
+      a += (c ^ (b | ~d)) + blocks[i + 0] - 198630844;
+      a = ((a << 6 | a >>> 26) + b) << 0;
+      d += (b ^ (a | ~c)) + blocks[i + 7] + 1126891415;
+      d = ((d << 10 | d >>> 22) + a) << 0;
+      c += (a ^ (d | ~b)) + blocks[i + 14] - 1416354905;
+      c = ((c << 15 | c >>> 17) + d) << 0;
+      b += (d ^ (c | ~a)) + blocks[i + 5] - 57434055;
+      b = ((b << 21 | b >>> 11) + c) << 0;
+      a += (c ^ (b | ~d)) + blocks[i + 12] + 1700485571;
+      a = ((a << 6 | a >>> 26) + b) << 0;
+      d += (b ^ (a | ~c)) + blocks[i + 3] - 1894986606;
+      d = ((d << 10 | d >>> 22) + a) << 0;
+      c += (a ^ (d | ~b)) + blocks[i + 10] - 1051523;
+      c = ((c << 15 | c >>> 17) + d) << 0;
+      b += (d ^ (c | ~a)) + blocks[i + 1] - 2054922799;
+      b = ((b << 21 | b >>> 11) + c) << 0;
+      a += (c ^ (b | ~d)) + blocks[i + 8] + 1873313359;
+      a = ((a << 6 | a >>> 26) + b) << 0;
+      d += (b ^ (a | ~c)) + blocks[i + 15] - 30611744;
+      d = ((d << 10 | d >>> 22) + a) << 0;
+      c += (a ^ (d | ~b)) + blocks[i + 6] - 1560198380;
+      c = ((c << 15 | c >>> 17) + d) << 0;
+      b += (d ^ (c | ~a)) + blocks[i + 13] + 1309151649;
+      b = ((b << 21 | b >>> 11) + c) << 0;
+      a += (c ^ (b | ~d)) + blocks[i + 4] - 145523070;
+      a = ((a << 6 | a >>> 26) + b) << 0;
+      d += (b ^ (a | ~c)) + blocks[i + 11] - 1120210379;
+      d = ((d << 10 | d >>> 22) + a) << 0;
+      c += (a ^ (d | ~b)) + blocks[i + 2] + 718787259;
+      c = ((c << 15 | c >>> 17) + d) << 0;
+      b += (d ^ (c | ~a)) + blocks[i + 9] - 343485551;
+      b = ((b << 21 | b >>> 11) + c) << 0;
+
+      h0 = (h0 + a) << 0;
+      h1 = (h1 + b) << 0;
+      h2 = (h2 + c) << 0;
+      h3 = (h3 + d) << 0;
+    }
+
     return toHexString(h0) + toHexString(h1) + toHexString(h2) + toHexString(h3);
   };
 
   var toHexString = function(num) {
-    var hex = "";
-    for(var i = 0; i < 4; i++)
-    {
+    var hex = '';
+    for(var i = 0; i < 4; i++) {
       var offset = i << 3;
-      hex += HEX_CHARS.charAt((num >> (offset + 4)) & 0x0F) + HEX_CHARS.charAt((num >> offset) & 0x0F);
+      hex += HEX_CHARS[(num >> (offset + 4)) & 0x0F] + HEX_CHARS[(num >> offset) & 0x0F];
     }
     return hex;
   };
 
-  var hasUTF8 = function(message) {
-    var i = message.length;
-    while(i--)
-      if(message.charCodeAt(i) > 127)
-        return true;
-    return false;
+  var getBytesFromUtf8 = function(str) {
+    var bytes = [], index = 0;
+    for (var i = 0;i < str.length; i++) {
+      var c = str.charCodeAt(i);
+      if (c < 0x80) {
+        bytes[index++] = c;
+      } else if (c < 0x800) {
+        bytes[index++] = 0xc0 | (c >> 6);
+        bytes[index++] = 0x80 | (c & 0x3f);
+      } else if (c < 0xd800 || c >= 0xe000) {
+        bytes[index++] = 0xe0 | (c >> 12);
+        bytes[index++] = 0x80 | ((c >> 6) & 0x3f);
+        bytes[index++] = 0x80 | (c & 0x3f);
+      } else {
+        c = 0x10000 + (((c & 0x3ff) << 10) | (str.charCodeAt(++i) & 0x3ff));
+        bytes[index++] = 0xf0 | (c >> 18);
+        bytes[index++] = 0x80 | ((c >> 12) & 0x3f);
+        bytes[index++] = 0x80 | ((c >> 6) & 0x3f);
+        bytes[index++] = 0x80 | (c & 0x3f);
+      }
+    }
+    return bytes;
   };
 
-  var ASCIItoBlocks = function(message) {
+  var getBlocksFromAscii = function(message) {
     // a block is 32 bits(4 bytes), a chunk is 512 bits(64 bytes)
     var length = message.length;
     var chunkCount = ((length + 8) >> 6) + 1;
     var blockCount = chunkCount << 4; // chunkCount * 16
-    var blocks = [];
-    var i;
-    for(i = 0;i < blockCount;++i)
+    var blocks = [], i;
+    for(i = 0;i < blockCount;++i) {
       blocks[i] = 0;
-    for(i = 0;i < length;++i)
-      blocks[i >> 2] |= message.charCodeAt(i) << ((i % 4) << 3);
-    blocks[i >> 2] |= 0x80 << ((i % 4) << 3);
+    }
+    for(i = 0;i < length;++i) {
+      blocks[i >> 2] |= message.charCodeAt(i) << ((i & 3) << 3);
+    }
+    blocks[i >> 2] |= 0x80 << ((i & 3) << 3);
     blocks[blockCount - 2] = length << 3; // length * 8
     return blocks;
   };
 
-  var UTF8toBlocks = function(message) {
-    var uri = encodeURIComponent(message);
-    var blocks = [];
-    for(var i = 0, bytes = 0, length = uri.length;i < length;++i)
-    {
-      var c = uri.charCodeAt(i);
-      if(c == 37) // %
-        blocks[bytes >> 2] |= ((HEX_TABLE[uri.charAt(++i)] << 4) | HEX_TABLE[uri.charAt(++i)]) << ((bytes % 4) << 3);
-      else
-        blocks[bytes >> 2] |= c << ((bytes % 4) << 3);
-      ++bytes;
-    }
-    var chunkCount = ((bytes + 8) >> 6) + 1;
+  var getBlocksFromUtf8 = function(message) {
+    var bytes = getBytesFromUtf8(message);
+    var length = bytes.length;
+    var chunkCount = ((length + 8) >> 6) + 1;
     var blockCount = chunkCount << 4; // chunkCount * 16
-    var index = bytes >> 2;
-    blocks[index] |= 0x80 << ((bytes % 4) << 3);
-    for(var i = index + 1;i < blockCount;++i)
+    var blocks = [], i;
+    for(i = 0;i < blockCount;++i) {
       blocks[i] = 0;
-    blocks[blockCount - 2] = bytes << 3; // bytes * 8
+    }
+    for(i = 0;i < length;++i) {
+      blocks[i >> 2] |= bytes[i] << ((i & 3) << 3);
+    }
+    blocks[i >> 2] |= 0x80 << ((i & 3) << 3);
+    blocks[blockCount - 2] = length << 3; // length * 8
     return blocks;
   };
 
-  if(typeof(module) != 'undefined')
+  if(typeof(module) != 'undefined') {
     module.exports = md5;
-  else if(root)
+  } else if(root) {
     root.md5 = md5;
+  }
 }(this));

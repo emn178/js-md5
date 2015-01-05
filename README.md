@@ -1,26 +1,54 @@
 # js-md5
 A simple MD5 hash function for JavaScript supports UTF-8 encoding.
+[![Build Status](https://api.travis-ci.org/emn178/js-md5.png)](https://travis-ci.org/emn178/js-md5)  
+[![NPM](https://nodei.co/npm/js-md5.png?stars&downloads)](https://nodei.co/npm/js-md5/)
+
+## Demo
+[MD5 Online](http://emn178.github.io/online-tools/md5.html)  
+
+## Download
+[Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)  
+[Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
 
 ## Install
+You can also install js-md5 by using Bower.
+
+    bower install js-md5
+
 For node.js, you can use this command to install:
 
     npm install js-md5
 
 ## Usage
+You could use like this:
+```JavaScript
+md5('Message to hash');
+```
 If you use node.js, you should require the module first:
 ```JavaScript
 md5 = require('js-md5');
 ```
-And you could use like this:
-```JavaScript
-md5('Message to hash');
-```
+
+### Methods
+
+#### md5(str, asciiOnly)
+
+Hash string to md5, set asciiOnly to true for better performace if you ensure input is ascii.
+
+##### *str: `String`*
+
+String to hash.
+
+##### *asciiOnly: `Boolean` (default: `false`)*
+
+Specify the string encoding is ASCII.
+
 ## Example
 Code
 ```JavaScript
 md5('');
-md5('The quick brown fox jumps over the lazy dog');
-md5('The quick brown fox jumps over the lazy dog.');
+md5('The quick brown fox jumps over the lazy dog', true);
+md5('The quick brown fox jumps over the lazy dog.', true);
 ```
 Output
 
@@ -38,14 +66,9 @@ Output
 
     a7bac2239fcdcb3a067903d8077c4a07
 
-## Tests
-You can open `tests/index.html` in browser or use node.js to run test
-
-    node tests/node-test.js
-
-or
-
-    npm test
+## Benchmark
+[ASCII](http://jsperf.com/md5-ascii/3)  
+[UTF8](http://jsperf.com/md5-utf8)
 
 ## Extensions
 ### jQuery

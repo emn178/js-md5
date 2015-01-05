@@ -1,3 +1,11 @@
+# v0.1.3 / 2015-01-05
+
+* Improve performance.
+* Add bower package.
+* Fixed JSHint warnings.
+* Add travis.
+* Add coveralls.
+
 # v0.1.2 / 2014-07-27
 
 Fixed accents bug

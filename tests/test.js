@@ -1,5 +1,30 @@
-assert('md5 1', 'd41d8cd98f00b204e9800998ecf8427e', md5(''));
-assert('md5 2', '9e107d9d372bb6826bd81d3542a419d6', md5('The quick brown fox jumps over the lazy dog'));
-assert('md5 3', 'e4d909c290d0fb1ca068ffaddf22cbd0', md5('The quick brown fox jumps over the lazy dog.'));
-assert('md5 4', 'a7bac2239fcdcb3a067903d8077c4a07', md5('中文'));
-assert('md5 5', 'ec3edbf3b05a449fc206a0138c739c3b', md5('aécio'));
+describe('ascii', function() {
+  describe('less than 64 bytes', function() {
+    it('should be successful', function() {
+      expect(md5('')).to.be('d41d8cd98f00b204e9800998ecf8427e');
+      expect(md5('The quick brown fox jumps over the lazy dog')).to.be('9e107d9d372bb6826bd81d3542a419d6');
+      expect(md5('The quick brown fox jumps over the lazy dog.')).to.be('e4d909c290d0fb1ca068ffaddf22cbd0');
+    });
+  });
+
+  describe('more than 64 bytes', function() {
+    it('should be successful', function() {
+      expect(md5('The MD5 message-digest algorithm is a widely used cryptographic hash function producing a 128-bit (16-byte) hash value, typically expressed in text format as a 32 digit hexadecimal number. MD5 has been utilized in a wide variety of cryptographic applications, and is also commonly used to verify data integrity.')).to.be('f63872ef7bc97a8a8eadba6f0881de53');
+    });
+  });
+});
+
+describe('UTF8', function() {
+  describe('less than 64 bytes', function() {
+    it('should be successful', function() {
+      expect(md5('中文')).to.be('a7bac2239fcdcb3a067903d8077c4a07');
+      expect(md5('aécio')).to.be('ec3edbf3b05a449fc206a0138c739c3b');
+    });
+  });
+
+  describe('more than 64 bytes', function() {
+    it('should be successful', function() {
+      expect(md5('訊息摘要演算法第五版（英語：Message-Digest Algorithm 5，縮寫為MD5），是當前電腦領域用於確保資訊傳輸完整一致而廣泛使用的雜湊演算法之一（又譯雜湊演算法、摘要演算法等），主流程式語言普遍已有MD5的實作。')).to.be('ad36c9ab669a0ba9ce46d3ce9134de34');
+    });
+  });
+});
