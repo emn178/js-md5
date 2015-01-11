@@ -11,7 +11,7 @@ A simple MD5 hash function for JavaScript supports UTF-8 encoding.
 [Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)  
 [Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
 
-## Install
+## Installation
 You can also install js-md5 by using Bower.
 
     bower install md5

@@ -1,3 +1,8 @@
+# v0.1.4 / 2015-01-11
+
+* Improve performance.
+* Add test case.
+
 # v0.1.3 / 2015-01-05
 
 * Improve performance.
