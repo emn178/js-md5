@@ -54,8 +54,7 @@ Output
     a7bac2239fcdcb3a067903d8077c4a07
 
 ## Benchmark
-[ASCII](http://jsperf.com/md5-ascii/4)  
-[UTF8](http://jsperf.com/md5-utf8/3)
+[MD5 Shootout](http://jsperf.com/md5-shootout/79)
 
 ## Extensions
 ### jQuery
