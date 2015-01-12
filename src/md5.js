@@ -1,5 +1,5 @@
 /*
- * js-md5 v0.1.4
+ * js-md5 v0.2.0
  * https://github.com/emn178/js-md5
  *
  * Copyright 2014-2015, emn178@gmail.com
@@ -10,62 +10,83 @@
 ;(function(root, undefined) {
   'use strict';
 
-  var nodejs = typeof(module) != 'undefined';
-  if(nodejs) {
+  var NODE_JS = typeof(module) != 'undefined';
+  if(NODE_JS) {
     root = global;
   }
+  var ARRAY_BUFFER = !root.JS_MD5_TEST && typeof(ArrayBuffer) != 'undefined';
 
   var HEX_CHARS = '0123456789abcdef'.split('');
 
   var blocks = [], buffer8;
-  if(!root.JS_MD5_TEST && typeof(ArrayBuffer) != 'undefined') {
-    var buffer = new ArrayBuffer(64);
+  if(ARRAY_BUFFER) {
+    var buffer = new ArrayBuffer(68);
     buffer8 = new Uint8Array(buffer);
     blocks = new Uint32Array(buffer);
   }
 
-  var md5 = function(message, asciiOnly) {
-    var h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, 
-        a, b, c, d, bc, da, index = 0, bytes, length, utf8 = false, i;
-    if(!asciiOnly && /[^\x00-\x7F]/.test(message)) {
-      utf8 = true;
-      bytes = getBytesFromUtf8(message);
-      length = bytes.length;
-    } else {
-      length = message.length;
-    }
+  var EXTRA = [128, 32768, 8388608, -2147483648];
+  var SHIFT = [0, 8, 16, 24];
+
+  var md5 = function(message) {
+    var h0, h1, h2, h3, a, b, c, d, bc, da, code,
+        index = 0, i, start = 0, bytes = 0, length = message.length;
+    blocks[16] = 0;
     do {
-      blocks[0] = blocks[1] = blocks[2] = blocks[3] =
+      blocks[0] = blocks[16];
+      blocks[16] = blocks[1] = blocks[2] = blocks[3] =
       blocks[4] = blocks[5] = blocks[6] = blocks[7] =
       blocks[8] = blocks[9] = blocks[10] = blocks[11] =
       blocks[12] = blocks[13] = blocks[14] = blocks[15] = 0;
-      if(utf8) {
-        if(buffer8) {
-          for(i = 0;index < length && i < 64;++index, ++i) {
-            buffer8[i] = bytes[index];
-          }
-        } else {
-          for(i = 0;index < length && i < 64;++index, ++i) {
-            blocks[i >> 2] |= bytes[index] <<((i & 3) << 3);
+      if(ARRAY_BUFFER) {
+        for (i = start;index < length && i < 64; ++index) {
+          code = message.charCodeAt(index);
+          if (code < 0x80) {
+            buffer8[i++] = code;
+          } else if (code < 0x800) {
+            buffer8[i++] = 0xc0 | (code >> 6);
+            buffer8[i++] = 0x80 | (code & 0x3f);
+          } else if (code < 0xd800 || code >= 0xe000) {
+            buffer8[i++] = 0xe0 | (code >> 12);
+            buffer8[i++] = 0x80 | ((code >> 6) & 0x3f);
+            buffer8[i++] = 0x80 | (code & 0x3f);
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+            buffer8[i++] = 0xf0 | (code >> 18);
+            buffer8[i++] = 0x80 | ((code >> 12) & 0x3f);
+            buffer8[i++] = 0x80 | ((code >> 6) & 0x3f);
+            buffer8[i++] = 0x80 | (code & 0x3f);
           }
         }
       } else {
-        if(buffer8) {
-          for(i = 0;index < length && i < 64;++index, ++i) {
-            buffer8[i] = message.charCodeAt(index);
-          }
-        } else {
-          for(i = 0;index < length && i < 64;++index, ++i) {
-            blocks[i >> 2] |= message.charCodeAt(index) << ((i & 3) << 3);
+        for (i = start;index < length && i < 64; ++index) {
+          code = message.charCodeAt(index);
+          if (code < 0x80) {
+            blocks[i >> 2] |= code << SHIFT[i++ & 3];
+          } else if (code < 0x800) {
+            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else if (code < 0xd800 || code >= 0xe000) {
+            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
           }
         }
       }
+      bytes += i - start;
+      start = i - 64;
       if(index == length) {
-        blocks[i >> 2] |= 0x80 << ((i & 3) << 3);
-        blocks[14] = length << 3;
+        blocks[i >> 2] |= EXTRA[i & 3];
+        blocks[14] = bytes << 3;
       }
 
-      if(a === undefined) {
+      if(h0 === undefined) {
         a = blocks[0] - 680876937;
         a = (a << 7 | a >>> 25) - 271733879 << 0;
         d = blocks[1] - 117830708 + ((2004318071 & a) ^ -1732584194);
@@ -226,10 +247,17 @@
       b += (d ^ (c | ~a)) + blocks[9] - 343485551;
       b = (b << 21 | b >>> 11) + c << 0;
 
-      h0 = h0 + a << 0;
-      h1 = h1 + b << 0;
-      h2 = h2 + c << 0;
-      h3 = h3 + d << 0;
+      if(h0 === undefined) {
+        h0 = a + 1732584193 << 0;
+        h1 = b - 271733879<< 0;
+        h2 = c - 1732584194 << 0;
+        h3 = d + 271733878 << 0;
+      } else {
+        h0 = h0 + a << 0;
+        h1 = h1 + b << 0;
+        h2 = h2 + c << 0;
+        h3 = h3 + d << 0;
+      }
     } while(index < length);
 
     return toHexString(h0) + toHexString(h1) + toHexString(h2) + toHexString(h3);
@@ -244,31 +272,7 @@
     return hex;
   };
 
-  var getBytesFromUtf8 = function(str) {
-    var bytes = [], index = 0;
-    for (var i = 0;i < str.length; i++) {
-      var c = str.charCodeAt(i);
-      if (c < 0x80) {
-        bytes[index++] = c;
-      } else if (c < 0x800) {
-        bytes[index++] = 0xc0 | (c >> 6);
-        bytes[index++] = 0x80 | (c & 0x3f);
-      } else if (c < 0xd800 || c >= 0xe000) {
-        bytes[index++] = 0xe0 | (c >> 12);
-        bytes[index++] = 0x80 | ((c >> 6) & 0x3f);
-        bytes[index++] = 0x80 | (c & 0x3f);
-      } else {
-        c = 0x10000 + (((c & 0x3ff) << 10) | (str.charCodeAt(++i) & 0x3ff));
-        bytes[index++] = 0xf0 | (c >> 18);
-        bytes[index++] = 0x80 | ((c >> 12) & 0x3f);
-        bytes[index++] = 0x80 | ((c >> 6) & 0x3f);
-        bytes[index++] = 0x80 | (c & 0x3f);
-      }
-    }
-    return bytes;
-  };
-
-  if(!root.JS_MD5_TEST && nodejs) {
+  if(!root.JS_MD5_TEST && NODE_JS) {
     module.exports = md5;
   } else if(root) {
     root.md5 = md5;

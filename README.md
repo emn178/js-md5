@@ -30,20 +30,6 @@ If you use node.js, you should require the module first:
 md5 = require('js-md5');
 ```
 
-### Methods
-
-#### md5(str, asciiOnly)
-
-Hash string to md5, set asciiOnly to true for better performace if you ensure input is ascii.
-
-##### *str: `String`*
-
-String to hash.
-
-##### *asciiOnly: `Boolean` (default: `false`)*
-
-Specify the string encoding is ASCII.
-
 ## Example
 Code
 ```JavaScript
