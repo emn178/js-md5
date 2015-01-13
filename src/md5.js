@@ -1,5 +1,5 @@
 /*
- * js-md5 v0.2.0
+ * js-md5 v0.2.1
  * https://github.com/emn178/js-md5
  *
  * Copyright 2014-2015, emn178@gmail.com
@@ -15,22 +15,30 @@
     root = global;
   }
   var ARRAY_BUFFER = !root.JS_MD5_TEST && typeof(ArrayBuffer) != 'undefined';
-
   var HEX_CHARS = '0123456789abcdef'.split('');
+  var EXTRA = [128, 32768, 8388608, -2147483648];
+  var SHIFT = [0, 8, 16, 24];
 
-  var blocks = [], buffer8;
+  var blocks = [], buffer8, nodeMd5;
   if(ARRAY_BUFFER) {
     var buffer = new ArrayBuffer(68);
     buffer8 = new Uint8Array(buffer);
     blocks = new Uint32Array(buffer);
   }
 
-  var EXTRA = [128, 32768, 8388608, -2147483648];
-  var SHIFT = [0, 8, 16, 24];
+  if(!root.JS_MD5_TEST && NODE_JS) {
+    var crypto = require('crypto');
+    nodeMd5 = function(message) {
+      return crypto.createHash('md5').update(message, 'utf8').digest('hex');
+    };
+  }
 
   var md5 = function(message) {
     var h0, h1, h2, h3, a, b, c, d, bc, da, code,
         index = 0, i, start = 0, bytes = 0, length = message.length;
+    if(nodeMd5 && length > 22) {
+      return nodeMd5(message);
+    }
     blocks[16] = 0;
     do {
       blocks[0] = blocks[16];
@@ -89,11 +97,11 @@
       if(h0 === undefined) {
         a = blocks[0] - 680876937;
         a = (a << 7 | a >>> 25) - 271733879 << 0;
-        d = blocks[1] - 117830708 + ((2004318071 & a) ^ -1732584194);
+        d = (-1732584194 ^ a & 2004318071) + blocks[1] - 117830708;
         d = (d << 12 | d >>> 20) + a << 0;
-        c = blocks[2] - 1126478375 + (((a ^ -271733879) & d) ^ -271733879);
+        c = (-271733879 ^ (d & (a ^ -271733879))) + blocks[2] - 1126478375;
         c = (c << 17 | c >>> 15) + d << 0;
-        b = blocks[3] - 1316259209 + (((d ^ a) & c) ^ a);
+        b = (a ^ (c & (d ^ a))) + blocks[3] - 1316259209;
         b = (b << 22 | b >>> 10) + c << 0;
       } else {
         a = h0;
@@ -169,49 +177,41 @@
       bc = b ^ c;
       a += (bc ^ d) + blocks[5] - 378558;
       a = (a << 4 | a >>> 28) + b << 0;
-      bc = b ^ c;
       d += (bc ^ a) + blocks[8] - 2022574463;
       d = (d << 11 | d >>> 21) + a << 0;
       da = d ^ a;
       c += (da ^ b) + blocks[11] + 1839030562;
       c = (c << 16 | c >>> 16) + d << 0;
-      da = d ^ a;
       b += (da ^ c) + blocks[14] - 35309556;
       b = (b << 23 | b >>> 9) + c << 0;
       bc = b ^ c;
       a += (bc ^ d) + blocks[1] - 1530992060;
       a = (a << 4 | a >>> 28) + b << 0;
-      bc = b ^ c;
       d += (bc ^ a) + blocks[4] + 1272893353;
       d = (d << 11 | d >>> 21) + a << 0;
       da = d ^ a;
       c += (da ^ b) + blocks[7] - 155497632;
       c = (c << 16 | c >>> 16) + d << 0;
-      da = d ^ a;
       b += (da ^ c) + blocks[10] - 1094730640;
       b = (b << 23 | b >>> 9) + c << 0;
       bc = b ^ c;
       a += (bc ^ d) + blocks[13] + 681279174;
       a = (a << 4 | a >>> 28) + b << 0;
-      bc = b ^ c;
       d += (bc ^ a) + blocks[0] - 358537222;
       d = (d << 11 | d >>> 21) + a << 0;
       da = d ^ a;
       c += (da ^ b) + blocks[3] - 722521979;
       c = (c << 16 | c >>> 16) + d << 0;
-      da = d ^ a;
       b += (da ^ c) + blocks[6] + 76029189;
       b = (b << 23 | b >>> 9) + c << 0;
       bc = b ^ c;
       a += (bc ^ d) + blocks[9] - 640364487;
       a = (a << 4 | a >>> 28) + b << 0;
-      bc = b ^ c;
       d += (bc ^ a) + blocks[12] - 421815835;
       d = (d << 11 | d >>> 21) + a << 0;
       da = d ^ a;
       c += (da ^ b) + blocks[15] + 530742520;
       c = (c << 16 | c >>> 16) + d << 0;
-      da = d ^ a;
       b += (da ^ c) + blocks[2] - 995338651;
       b = (b << 23 | b >>> 9) + c << 0;
       a += (c ^ (b | ~d)) + blocks[0] - 198630844;
@@ -249,7 +249,7 @@
 
       if(h0 === undefined) {
         h0 = a + 1732584193 << 0;
-        h1 = b - 271733879<< 0;
+        h1 = b - 271733879 << 0;
         h2 = c - 1732584194 << 0;
         h3 = d + 271733878 << 0;
       } else {
@@ -260,16 +260,22 @@
       }
     } while(index < length);
 
-    return toHexString(h0) + toHexString(h1) + toHexString(h2) + toHexString(h3);
-  };
-
-  var toHexString = function(num) {
-    var hex = '';
-    for(var i = 0; i < 4; i++) {
-      var offset = i << 3;
-      hex += HEX_CHARS[(num >> (offset + 4)) & 0x0F] + HEX_CHARS[(num >> offset) & 0x0F];
-    }
-    return hex;
+    return HEX_CHARS[(h0 >> 4) & 0x0F] + HEX_CHARS[h0 & 0x0F] +
+       HEX_CHARS[(h0 >> 12) & 0x0F] + HEX_CHARS[(h0 >> 8) & 0x0F] +
+       HEX_CHARS[(h0 >> 20) & 0x0F] + HEX_CHARS[(h0 >> 16) & 0x0F] +
+       HEX_CHARS[(h0 >> 28) & 0x0F] + HEX_CHARS[(h0 >> 24) & 0x0F] +
+       HEX_CHARS[(h1 >> 4) & 0x0F] + HEX_CHARS[h1 & 0x0F] +
+       HEX_CHARS[(h1 >> 12) & 0x0F] + HEX_CHARS[(h1 >> 8) & 0x0F] +
+       HEX_CHARS[(h1 >> 20) & 0x0F] + HEX_CHARS[(h1 >> 16) & 0x0F] +
+       HEX_CHARS[(h1 >> 28) & 0x0F] + HEX_CHARS[(h1 >> 24) & 0x0F] +
+       HEX_CHARS[(h2 >> 4) & 0x0F] + HEX_CHARS[h2 & 0x0F] +
+       HEX_CHARS[(h2 >> 12) & 0x0F] + HEX_CHARS[(h2 >> 8) & 0x0F] +
+       HEX_CHARS[(h2 >> 20) & 0x0F] + HEX_CHARS[(h2 >> 16) & 0x0F] +
+       HEX_CHARS[(h2 >> 28) & 0x0F] + HEX_CHARS[(h2 >> 24) & 0x0F] +
+       HEX_CHARS[(h3 >> 4) & 0x0F] + HEX_CHARS[h3 & 0x0F] +
+       HEX_CHARS[(h3 >> 12) & 0x0F] + HEX_CHARS[(h3 >> 8) & 0x0F] +
+       HEX_CHARS[(h3 >> 20) & 0x0F] + HEX_CHARS[(h3 >> 16) & 0x0F] +
+       HEX_CHARS[(h3 >> 28) & 0x0F] + HEX_CHARS[(h3 >> 24) & 0x0F];
   };
 
   if(!root.JS_MD5_TEST && NODE_JS) {
