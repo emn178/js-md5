@@ -1,5 +1,5 @@
 /*
- * js-md5 v0.2.1
+ * js-md5 v0.2.2
  * https://github.com/emn178/js-md5
  *
  * Copyright 2014-2015, emn178@gmail.com
@@ -23,26 +23,16 @@
   var EXTRA = [128, 32768, 8388608, -2147483648];
   var SHIFT = [0, 8, 16, 24];
 
-  var blocks = [], buffer8, nodeMd5;
+  var blocks = [], buffer8;
   if(ARRAY_BUFFER) {
     var buffer = new ArrayBuffer(68);
     buffer8 = new Uint8Array(buffer);
     blocks = new Uint32Array(buffer);
   }
 
-  if(!root.JS_MD5_TEST && NODE_JS) {
-    var crypto = require('crypto');
-    nodeMd5 = function(message) {
-      return crypto.createHash('md5').update(message, 'utf8').digest('hex');
-    };
-  }
-
   var md5 = function(message) {
-    var h0, h1, h2, h3, a, b, c, d, bc, da, code,
+    var h0, h1, h2, h3, a, b, c, d, bc, da, code, first = true, end = false,
         index = 0, i, start = 0, bytes = 0, length = message.length;
-    if(nodeMd5 && length > 22) {
-      return nodeMd5(message);
-    }
     blocks[16] = 0;
     do {
       blocks[0] = blocks[16];
@@ -95,10 +85,14 @@
       start = i - 64;
       if(index == length) {
         blocks[i >> 2] |= EXTRA[i & 3];
-        blocks[14] = bytes << 3;
+        ++index;
       }
-
-      if(h0 === undefined) {
+      if(index > length && i < 56) {
+        blocks[14] = bytes << 3;
+        end = true;
+      }
+      
+      if(first) {
         a = blocks[0] - 680876937;
         a = (a << 7 | a >>> 25) - 271733879 << 0;
         d = (-1732584194 ^ a & 2004318071) + blocks[1] - 117830708;
@@ -251,18 +245,19 @@
       b += (d ^ (c | ~a)) + blocks[9] - 343485551;
       b = (b << 21 | b >>> 11) + c << 0;
 
-      if(h0 === undefined) {
+      if(first) {
         h0 = a + 1732584193 << 0;
         h1 = b - 271733879 << 0;
         h2 = c - 1732584194 << 0;
         h3 = d + 271733878 << 0;
+        first = false;
       } else {
         h0 = h0 + a << 0;
         h1 = h1 + b << 0;
         h2 = h2 + c << 0;
         h3 = h3 + d << 0;
       }
-    } while(index < length);
+    } while(!end);
 
     if(FIREFOX) {
       var hex = HEX_CHARS[(h0 >> 4) & 0x0F] + HEX_CHARS[h0 & 0x0F];
@@ -303,7 +298,16 @@
   };
 
   if(!root.JS_MD5_TEST && NODE_JS) {
-    module.exports = md5;
+    var crypto = require('crypto');
+
+    module.exports = function(message) {
+      if(message.length <= 80) {
+        return md5(message);
+      } else if(message.length <= 183 && !/[^\x00-\x7F]/.test(message)) {
+        return md5(message);
+      }
+      return crypto.createHash('md5').update(message, 'utf8').digest('hex');
+    };
   } else if(root) {
     root.md5 = md5;
   }

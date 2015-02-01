@@ -1,3 +1,8 @@
+# v0.2.2 / 2015-02-01
+
+* Fixed bug when special length.
+* Improve performance for node.js.
+
 # v0.2.1 / 2015-01-13
 
 * Improve performance.
