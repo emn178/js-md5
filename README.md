@@ -54,7 +54,7 @@ Output
     a7bac2239fcdcb3a067903d8077c4a07
 
 ## Benchmark
-[UTF8](http://jsperf.com/md5-shootout/81)
+[UTF8](http://jsperf.com/md5-shootout/81)  
 [ASCII](http://jsperf.com/md5-shootout/82)
 
 ## Extensions
