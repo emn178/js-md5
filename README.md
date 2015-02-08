@@ -34,8 +34,8 @@ md5 = require('js-md5');
 Code
 ```JavaScript
 md5('');
-md5('The quick brown fox jumps over the lazy dog', true);
-md5('The quick brown fox jumps over the lazy dog.', true);
+md5('The quick brown fox jumps over the lazy dog');
+md5('The quick brown fox jumps over the lazy dog.');
 ```
 Output
 
