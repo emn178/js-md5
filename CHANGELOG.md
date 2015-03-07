@@ -1,3 +1,7 @@
+# v0.3.0 / 2015-03-07
+
+* Support byte Array, Uint8Array and ArrayBuffer input.
+
 # v0.2.2 / 2015-02-01
 
 * Fixed bug when special length.

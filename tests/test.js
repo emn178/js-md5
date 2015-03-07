@@ -44,4 +44,28 @@
       });
     });
   });
+
+  describe('Array', function() {
+    describe('Array', function() {
+      it('should be successful', function() {
+        expect(md5([])).to.be('d41d8cd98f00b204e9800998ecf8427e');
+        expect(md5([0])).to.be('93b885adfe0da089cdf634904fd59f71');
+        expect(md5([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])).to.be('9e107d9d372bb6826bd81d3542a419d6');
+      });
+    });
+
+    describe('Uint8Array', function() {
+      it('should be successful', function() {
+        expect(md5(new Uint8Array([]))).to.be('d41d8cd98f00b204e9800998ecf8427e');
+        expect(md5(new Uint8Array(371))).to.be('58f494c2a0fb65332110fb62ae5c4a74');
+      });
+    });
+
+    describe('ArrayBuffer', function() {
+      it('should be successful', function() {
+        expect(md5(new ArrayBuffer(0))).to.be('d41d8cd98f00b204e9800998ecf8427e');
+        expect(md5(new ArrayBuffer(1))).to.be('93b885adfe0da089cdf634904fd59f71');
+      });
+    });
+  });
 })(md5);

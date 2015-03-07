@@ -53,6 +53,18 @@ Output
 
     a7bac2239fcdcb3a067903d8077c4a07
 
+It also supports byte `Array`, `Uint8Array`, `ArrayBuffer` input:
+
+Code
+```JavaScript
+md5([]);
+md5(new Uint8Array([]));
+```
+Output
+
+    d41d8cd98f00b204e9800998ecf8427e
+    d41d8cd98f00b204e9800998ecf8427e
+
 ## Benchmark
 [UTF8](http://jsperf.com/md5-shootout/81)  
 [ASCII](http://jsperf.com/md5-shootout/82)

@@ -1,5 +1,5 @@
 /*
- * js-md5 v0.2.2
+ * js-md5 v0.3.0
  * https://github.com/emn178/js-md5
  *
  * Copyright 2014-2015, emn178@gmail.com
@@ -31,6 +31,11 @@
   }
 
   var md5 = function(message) {
+    var notString = typeof(message) != 'string';
+    if(notString && message.constructor == ArrayBuffer) {
+      message = new Uint8Array(message);
+    }
+
     var h0, h1, h2, h3, a, b, c, d, bc, da, code, first = true, end = false,
         index = 0, i, start = 0, bytes = 0, length = message.length;
     blocks[16] = 0;
@@ -40,44 +45,56 @@
       blocks[4] = blocks[5] = blocks[6] = blocks[7] =
       blocks[8] = blocks[9] = blocks[10] = blocks[11] =
       blocks[12] = blocks[13] = blocks[14] = blocks[15] = 0;
-      if(ARRAY_BUFFER) {
-        for (i = start;index < length && i < 64; ++index) {
-          code = message.charCodeAt(index);
-          if (code < 0x80) {
-            buffer8[i++] = code;
-          } else if (code < 0x800) {
-            buffer8[i++] = 0xc0 | (code >> 6);
-            buffer8[i++] = 0x80 | (code & 0x3f);
-          } else if (code < 0xd800 || code >= 0xe000) {
-            buffer8[i++] = 0xe0 | (code >> 12);
-            buffer8[i++] = 0x80 | ((code >> 6) & 0x3f);
-            buffer8[i++] = 0x80 | (code & 0x3f);
-          } else {
-            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            buffer8[i++] = 0xf0 | (code >> 18);
-            buffer8[i++] = 0x80 | ((code >> 12) & 0x3f);
-            buffer8[i++] = 0x80 | ((code >> 6) & 0x3f);
-            buffer8[i++] = 0x80 | (code & 0x3f);
+      if(notString) {
+        if(ARRAY_BUFFER) {
+          for (i = start;index < length && i < 64; ++index) {
+            buffer8[i++] = message[index];
+          }
+        } else {
+          for (i = start;index < length && i < 64; ++index) {
+            blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
           }
         }
       } else {
-        for (i = start;index < length && i < 64; ++index) {
-          code = message.charCodeAt(index);
-          if (code < 0x80) {
-            blocks[i >> 2] |= code << SHIFT[i++ & 3];
-          } else if (code < 0x800) {
-            blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else if (code < 0xd800 || code >= 0xe000) {
-            blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
-          } else {
-            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
-            blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+        if(ARRAY_BUFFER) {
+          for (i = start;index < length && i < 64; ++index) {
+            code = message.charCodeAt(index);
+            if (code < 0x80) {
+              buffer8[i++] = code;
+            } else if (code < 0x800) {
+              buffer8[i++] = 0xc0 | (code >> 6);
+              buffer8[i++] = 0x80 | (code & 0x3f);
+            } else if (code < 0xd800 || code >= 0xe000) {
+              buffer8[i++] = 0xe0 | (code >> 12);
+              buffer8[i++] = 0x80 | ((code >> 6) & 0x3f);
+              buffer8[i++] = 0x80 | (code & 0x3f);
+            } else {
+              code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+              buffer8[i++] = 0xf0 | (code >> 18);
+              buffer8[i++] = 0x80 | ((code >> 12) & 0x3f);
+              buffer8[i++] = 0x80 | ((code >> 6) & 0x3f);
+              buffer8[i++] = 0x80 | (code & 0x3f);
+            }
+          }
+        } else {
+          for (i = start;index < length && i < 64; ++index) {
+            code = message.charCodeAt(index);
+            if (code < 0x80) {
+              blocks[i >> 2] |= code << SHIFT[i++ & 3];
+            } else if (code < 0x800) {
+              blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+              blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+            } else if (code < 0xd800 || code >= 0xe000) {
+              blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+              blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+              blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+            } else {
+              code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+              blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+              blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+              blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+              blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+            }
           }
         }
       }
@@ -299,14 +316,24 @@
 
   if(!root.JS_MD5_TEST && NODE_JS) {
     var crypto = require('crypto');
+    var Buffer = require('buffer').Buffer;
 
     module.exports = function(message) {
-      if(message.length <= 80) {
-        return md5(message);
-      } else if(message.length <= 183 && !/[^\x00-\x7F]/.test(message)) {
+      if(typeof(message) == 'string') {
+        if(message.length <= 80) {
+          return md5(message);
+        } else if(message.length <= 183 && !/[^\x00-\x7F]/.test(message)) {
+          return md5(message);
+        }
+        return crypto.createHash('md5').update(message, 'utf8').digest('hex');
+      }
+      if(message.constructor == ArrayBuffer) {
+        message = new Uint8Array(message);
+      }
+      if(message.length <= 370) {
         return md5(message);
       }
-      return crypto.createHash('md5').update(message, 'utf8').digest('hex');
+      return crypto.createHash('md5').update(new Buffer(message)).digest('hex');
     };
   } else if(root) {
     root.md5 = md5;
