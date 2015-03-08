@@ -6,6 +6,7 @@ A simple MD5 hash function for JavaScript supports UTF-8 encoding.
 
 ## Demo
 [MD5 Online](http://emn178.github.io/online-tools/md5.html)  
+[MD5 File Checksum Online](http://emn178.github.io/online-tools/md5_checksum.html)  
 
 ## Download
 [Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)  
