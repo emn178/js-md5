@@ -1,3 +1,10 @@
+# v0.4.0 / 2015-12-28
+
+* Added support for update hash.
+* Added support for bytes array output.
+* Added support for ArrayBuffer output.
+* Added support for AMD.
+
 # v0.3.0 / 2015-03-07
 
 * Support byte Array, Uint8Array and ArrayBuffer input.
