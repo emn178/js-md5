@@ -14,7 +14,7 @@ delete require.cache[require.resolve('../src/md5.js')];
 delete require.cache[require.resolve('./test.js')];
 md5 = null;
 
-define = function(func) {
+define = function (func) {
   md5 = func();
   require('./test.js');
 };

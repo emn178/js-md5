@@ -1,9 +1,8 @@
 {
   "name": "js-md5",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": ["src/md5.js"],
   "ignore": [
-    "samples",
     "tests"
   ]
 }

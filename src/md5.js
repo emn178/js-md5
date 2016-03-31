@@ -3,8 +3,8 @@
  *
  * @namespace md5
  * @version 0.4.0
- * @author Yi-Cyuan Chen [emn178@gmail.com]
- * @copyright Yi-Cyuan Chen 2014-2015
+ * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @copyright Chen, Yi-Cyuan 2014-2016
  * @license MIT
  */
 (function (root) {
@@ -20,7 +20,7 @@
   var HEX_CHARS = '0123456789abcdef'.split('');
   var EXTRA = [128, 32768, 8388608, -2147483648];
   var SHIFT = [0, 8, 16, 24];
-  var OUTPUT_TYPES = ['hex', 'array', 'digest', 'buffer'];
+  var OUTPUT_TYPES = ['hex', 'array', 'digest', 'buffer', 'arrayBuffer'];
 
   var blocks = [], buffer8;
   if (ARRAY_BUFFER) {
@@ -59,7 +59,17 @@
    * md5.array('The quick brown fox jumps over the lazy dog');
    */
   /**
+   * @method arrayBuffer
+   * @memberof md5
+   * @description Output hash as ArrayBuffer
+   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+   * @returns {ArrayBuffer} ArrayBuffer
+   * @example
+   * md5.arrayBuffer('The quick brown fox jumps over the lazy dog');
+   */
+  /**
    * @method buffer
+   * @deprecated This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
    * @memberof md5
    * @description Output hash as ArrayBuffer
    * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
@@ -68,7 +78,7 @@
    * md5.buffer('The quick brown fox jumps over the lazy dog');
    */
   var createOutputMethod = function (outputType) {
-    return function(message) {
+    return function (message) {
       return new Md5(true).update(message)[outputType]();
     };
   };
@@ -125,43 +135,14 @@
     }
     var nodeMethod = function (message) {
       if (typeof message == 'string') {
-        if (message.length <= nodeMethod.utf8Threshold) {
-          return method(message);
-        } else if (message.length <= nodeMethod.asciiThreshold && !/[^\x00-\x7F]/.test(message)) {
-          return method(message);
-        }
         return crypto.createHash('md5').update(message, 'utf8').digest('hex');
       } else if (message.constructor == ArrayBuffer) {
         message = new Uint8Array(message);
-      } else if (message.length === undefined || message.length <= nodeMethod.bytesThreshold) {
+      } else if (message.length === undefined) {
         return method(message);
       }
       return crypto.createHash('md5').update(new Buffer(message)).digest('hex');
     };
-
-    /**
-     * @member {Number} utf8Threshold
-     * @default 18
-     * @description To use node.js md5 if UTF-8 string length is greater than this value.
-     * @memberof md5
-     */
-    nodeMethod.utf8Threshold = 18;
-
-    /**
-     * @member {Number} asciiThreshold
-     * @default 60
-     * @description To use node.js md5 if ascii string length is greater than this value.
-     * @memberof md5
-     */
-    nodeMethod.asciiThreshold = 60;
-
-    /**
-     * @member {Number} bytesThreshold
-     * @default 245
-     * @description To use node.js md5 if bytes length is greater than this value.
-     * @memberof md5
-     */
-    nodeMethod.bytesThreshold = 245;
     return nodeMethod;
   };
 
@@ -207,7 +188,7 @@
       return;
     }
     var notString = typeof(message) != 'string';
-    if(notString && message.constructor == root.ArrayBuffer) {
+    if (notString && message.constructor == root.ArrayBuffer) {
       message = new Uint8Array(message);
     }
     var code, index = 0, i, length = message.length || 0, blocks = this.blocks;
@@ -313,7 +294,7 @@
   Md5.prototype.hash = function () {
     var a, b, c, d, bc, da, blocks = this.blocks;
 
-    if(this.first) {
+    if (this.first) {
       a = blocks[0] - 680876937;
       a = (a << 7 | a >>> 25) - 271733879 << 0;
       d = (-1732584194 ^ a & 2004318071) + blocks[1] - 117830708;
@@ -466,7 +447,7 @@
     b += (d ^ (c | ~a)) + blocks[9] - 343485551;
     b = (b << 21 | b >>> 11) + c << 0;
 
-    if(this.first) {
+    if (this.first) {
       this.h0 = a + 1732584193 << 0;
       this.h1 = b - 271733879 << 0;
       this.h2 = c - 1732584194 << 0;
@@ -535,7 +516,7 @@
    * @example
    * hash.digest();
    */
-  Md5.prototype.digest = function() {
+  Md5.prototype.digest = function () {
     this.finalize();
 
     var h0 = this.h0, h1 = this.h1, h2 = this.h2, h3 = this.h3;
@@ -560,16 +541,16 @@
   Md5.prototype.array = Md5.prototype.digest;
 
   /**
-   * @method buffer
+   * @method arrayBuffer
    * @memberof Md5
    * @instance
    * @description Output hash as ArrayBuffer
    * @returns {ArrayBuffer} ArrayBuffer
-   * @see {@link md5.buffer}
+   * @see {@link md5.arrayBuffer}
    * @example
-   * hash.buffer();
+   * hash.arrayBuffer();
    */
-  Md5.prototype.buffer = function() {
+  Md5.prototype.arrayBuffer = function () {
     this.finalize();
 
     var buffer = new ArrayBuffer(16);
@@ -580,6 +561,19 @@
     blocks[3] = this.h3;
     return buffer;
   };
+
+  /**
+   * @method buffer
+   * @deprecated This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
+   * @memberof Md5
+   * @instance
+   * @description Output hash as ArrayBuffer
+   * @returns {ArrayBuffer} ArrayBuffer
+   * @see {@link md5.buffer}
+   * @example
+   * hash.buffer();
+   */
+  Md5.prototype.buffer = Md5.prototype.arrayBuffer;
 
   var exports = createMethod();
 

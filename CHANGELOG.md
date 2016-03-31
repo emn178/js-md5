@@ -1,3 +1,8 @@
+# v0.4.1 / 2016-03-31
+
+* Removed length detection in node.js.
+* Deprecated `buffer` and replace by `arrayBuffer`.
+
 # v0.4.0 / 2015-12-28
 
 * Added support for update hash.

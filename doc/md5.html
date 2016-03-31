@@ -68,14 +68,14 @@
     <dt class="tag-author">Author:</dt>
     <dd class="tag-author">
         <ul>
-            <li>Yi-Cyuan Chen [emn178@gmail.com]</li>
+            <li>Chen, Yi-Cyuan [emn178@gmail.com]</li>
         </ul>
     </dd>
     
 
     
     <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>Yi-Cyuan Chen 2014-2015</li></ul></dd>
+    <dd class="tag-copyright"><ul class="dummy"><li>Chen, Yi-Cyuan 2014-2016</li></ul></dd>
     
 
     
@@ -114,241 +114,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id=".asciiThreshold"><span class="type-signature">(static) </span>asciiThreshold<span class="type-signature"> :Number</span></h4>
-
-
-
-
-<div class="description">
-    To use node.js md5 if ascii string length is greater than this value.
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li>60</li>
-        </ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line150">line 150</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".bytesThreshold"><span class="type-signature">(static) </span>bytesThreshold<span class="type-signature"> :Number</span></h4>
-
-
-
-
-<div class="description">
-    To use node.js md5 if bytes length is greater than this value.
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li>245</li>
-        </ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line158">line 158</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".utf8Threshold"><span class="type-signature">(static) </span>utf8Threshold<span class="type-signature"> :Number</span></h4>
-
-
-
-
-<div class="description">
-    To use node.js md5 if UTF-8 string length is greater than this value.
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-default">Default Value:</dt>
-    <dd class="tag-default"><ul class="dummy">
-            <li>18</li>
-        </ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line142">line 142</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
     
 
     
@@ -526,7 +291,7 @@
 
     
 
-    <h4 class="name" id=".buffer"><span class="type-signature">(static) </span>buffer<span class="signature">(message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
+    <h4 class="name" id=".arrayBuffer"><span class="type-signature">(static) </span>arrayBuffer<span class="signature">(message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
 
     
 
@@ -684,6 +449,175 @@
 
     <h5>Example</h5>
     
+    <pre class="prettyprint"><code>md5.arrayBuffer('The quick brown fox jumps over the lazy dog');</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".buffer"><span class="type-signature">(static) </span>buffer<span class="signature">(message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Output hash as ArrayBuffer
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">message to hash</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line70">line 70</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    ArrayBuffer
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">ArrayBuffer</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
     <pre class="prettyprint"><code>md5.buffer('The quick brown fox jumps over the lazy dog');</code></pre>
 
 
@@ -744,7 +678,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line76">line 76</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -1127,9 +1061,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.hex('The quick brown fox jumps over the lazy dog');
-// equal to
-md5('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>md5.hex('The quick brown fox jumps over the lazy dog');// equal tomd5('The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -1247,7 +1179,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line84">line 84</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -1296,10 +1228,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var hash = md5.update('The quick brown fox jumps over the lazy dog');
-// equal to
-var hash = md5.create();
-hash.update('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>var hash = md5.update('The quick brown fox jumps over the lazy dog');// equal tovar hash = md5.create();hash.update('The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -1325,7 +1254,7 @@ hash.update('The quick brown fox jumps over the lazy dog');</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Dec 28 2015 15:48:48 GMT+0800 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Mar 31 2016 16:24:21 GMT+0800 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
