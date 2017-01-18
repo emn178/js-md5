@@ -67,10 +67,6 @@ md5.arrayBuffer(''); // ArrayBuffer
 md5.buffer(''); // ArrayBuffer, deprecated, This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
 ```
 
-## Benchmark
-[UTF8](http://jsperf.com/md5-shootout/81)  
-[ASCII](http://jsperf.com/md5-shootout/82)
-
 ## License
 The project is released under the [MIT license](http://www.opensource.org/licenses/MIT).
 

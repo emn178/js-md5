@@ -2,21 +2,22 @@
  * [js-md5]{@link https://github.com/emn178/js-md5}
  *
  * @namespace md5
- * @version 0.4.1
+ * @version 0.4.2
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
- * @copyright Chen, Yi-Cyuan 2014-2016
+ * @copyright Chen, Yi-Cyuan 2014-2017
  * @license MIT
  */
-(function (root) {
+(function () {
   'use strict';
 
-  var NODE_JS = typeof process == 'object' && process.versions && process.versions.node;
+  var root = typeof window === 'object' ? window : {};
+  var NODE_JS = !root.JS_MD5_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
   if (NODE_JS) {
     root = global;
   }
-  var COMMON_JS = !root.JS_MD5_TEST && typeof module == 'object' && module.exports;
-  var AMD = typeof define == 'function' && define.amd;
-  var ARRAY_BUFFER = !root.JS_MD5_TEST && typeof ArrayBuffer != 'undefined';
+  var COMMON_JS = !root.JS_MD5_NO_COMMON_JS && typeof module === 'object' && module.exports;
+  var AMD = typeof define === 'function' && define.amd;
+  var ARRAY_BUFFER = !root.JS_MD5_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
   var HEX_CHARS = '0123456789abcdef'.split('');
   var EXTRA = [128, 32768, 8388608, -2147483648];
   var SHIFT = [0, 8, 16, 24];
@@ -114,7 +115,7 @@
     method.update = function (message) {
       return method.create().update(message);
     };
-    for (var i = 0;i < OUTPUT_TYPES.length;++i) {
+    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
       var type = OUTPUT_TYPES[i];
       method[type] = createOutputMethod(type);
     }
@@ -122,21 +123,12 @@
   };
 
   var nodeWrap = function (method) {
-    var crypto, Buffer;
-    try {
-      if (root.JS_MD5_TEST) {
-        throw 'JS_MD5_TEST';
-      }
-      crypto = require('crypto');
-      Buffer = require('buffer').Buffer;
-    } catch (e) {
-      console.log(e);
-      return method;
-    }
+    var crypto = require('crypto');
+    var Buffer = require('buffer').Buffer;
     var nodeMethod = function (message) {
-      if (typeof message == 'string') {
+      if (typeof message === 'string') {
         return crypto.createHash('md5').update(message, 'utf8').digest('hex');
-      } else if (message.constructor == ArrayBuffer) {
+      } else if (message.constructor === ArrayBuffer) {
         message = new Uint8Array(message);
       } else if (message.length === undefined) {
         return method(message);
@@ -206,17 +198,17 @@
 
       if (notString) {
         if (ARRAY_BUFFER) {
-          for (i = this.start;index < length && i < 64; ++index) {
+          for (i = this.start; index < length && i < 64; ++index) {
             buffer8[i++] = message[index];
           }
         } else {
-          for (i = this.start;index < length && i < 64; ++index) {
+          for (i = this.start; index < length && i < 64; ++index) {
             blocks[i >> 2] |= message[index] << SHIFT[i++ & 3];
           }
         }
       } else {
         if (ARRAY_BUFFER) {
-          for (i = this.start;index < length && i < 64; ++index) {
+          for (i = this.start; index < length && i < 64; ++index) {
             code = message.charCodeAt(index);
             if (code < 0x80) {
               buffer8[i++] = code;
@@ -236,7 +228,7 @@
             }
           }
         } else {
-          for (i = this.start;index < length && i < 64; ++index) {
+          for (i = this.start; index < length && i < 64; ++index) {
             code = message.charCodeAt(index);
             if (code < 0x80) {
               blocks[i >> 2] |= code << SHIFT[i++ & 3];
@@ -604,4 +596,4 @@
       });
     }
   }
-}(this));
+})();

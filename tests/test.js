@@ -2,7 +2,7 @@
   Array.prototype.toHexString = ArrayBuffer.prototype.toHexString = function () {
     var array = new Uint8Array(this);
     var hex = '';
-    for (var i = 0;i < array.length;++i) {
+    for (var i = 0; i < array.length; ++i) {
       var c = array[i].toString('16');
       hex += c.length == 1 ? '0' + c : c;
     }
