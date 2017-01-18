@@ -14,6 +14,8 @@
   var NODE_JS = !root.JS_MD5_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
   if (NODE_JS) {
     root = global;
+  }else if (!root){
+    root = {};
   }
   var COMMON_JS = !root.JS_MD5_NO_COMMON_JS && typeof module === 'object' && module.exports;
   var AMD = typeof define === 'function' && define.amd;
