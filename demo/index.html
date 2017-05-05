@@ -1,0 +1,112 @@
+<input type="file" id="input" multiple> <label><input type="checkbox" id="chunk"> hash with chunks (better for very large files)</label>
+<table>
+	<thead>
+	<tr><th>file</th><th>type</th><th>size</th><th>md5</th><th>duration</th></tr>
+	</thead>
+	<tbody id="output"></tbody>
+</table>
+<style>
+body {
+	margin: 1em 2em;
+}
+td {
+	padding: .5em 1em;
+}
+table {
+	min-width: 600px;
+	margin-top: 1em;
+}
+td:nth-child(4) {
+	font-family: monospace;
+}
+
+</style>
+
+<!-- <script src="https://cdn.rawgit.com/caub/node-md5/master/dist/md5.min.js"></script> -->
+<!-- <script src="https://unpkg.com/js-md5@0.4.1/build/md5.min.js"></script> -->
+<script src="../src/md5.js"></script>
+
+
+<script>
+var MD5 = window.MD5 || window.md5;
+
+input.onchange = function(e) {
+	output.innerHTML = '';
+
+	Array.from(input.files).forEach(function(file, i) {
+
+		var tr = output.insertRow();
+		[file.name, file.type, file.size].forEach(function(val){
+			var td = tr.insertCell();
+			td.textContent = val;
+		});
+
+		if (chunk.checked) {
+			// with chunks:
+
+			var md5 = MD5.create();
+			var now = performance.now();
+
+			readFile(input.files[i], function(buffer) {
+				const arr = new Uint8Array(buffer);
+				md5.update(arr);
+			}, function(){
+				var hash = md5.hex();
+				var after = performance.now() - now;
+				[hash, after.toFixed(2)+' ms'].forEach(function(val){
+					var td = tr.insertCell();
+					td.textContent = val;
+				});
+			});
+
+
+		} else {
+			// without chunks:
+
+			var reader = new FileReader();
+			reader.readAsArrayBuffer(input.files[i])
+			reader.onload = function(e) {
+
+				var buffer = e.target.result;
+
+				var now = performance.now();
+				var hash = MD5(new Uint8Array(buffer));
+				var after = performance.now() - now;
+
+				[hash, after.toFixed(2)+' ms'].forEach(function(val){
+					var td = tr.insertCell();
+					td.textContent = val;
+				});
+			};
+		}
+
+	});
+}
+
+
+
+function readFile(file, progress, done) {
+	var chunkSize  = 64 * 1024;
+
+	chunkReaderBlock(0, chunkSize, file);
+
+	function chunkReaderBlock(offset, length) {
+		var reader = new FileReader();
+		var blob = file.slice(offset, length + offset);
+		reader.onload = function(e) {
+			var chunk = e.target.result, 
+				newOffset = offset + (chunk.byteLength || chunk.length);
+
+			progress(chunk);
+
+			if (newOffset >= file.size) {
+				return done();
+			}
+
+			chunkReaderBlock(newOffset, chunkSize);
+		};
+		reader.readAsArrayBuffer(blob);
+	}
+}
+
+</script>
