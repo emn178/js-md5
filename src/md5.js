@@ -15,6 +15,10 @@
   if (NODE_JS) {
     root = global;
   }
+  var btoa = NODE_JS ? function(strOrBuffer){
+    return Buffer.from(strOrBuffer, 'binary').toString('base64');
+  } : window && window.btoa;
+
   var COMMON_JS = !root.JS_MD5_NO_COMMON_JS && typeof module === 'object' && module.exports;
   var AMD = typeof define === 'function' && define.amd;
   var ARRAY_BUFFER = !root.JS_MD5_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
@@ -496,7 +500,11 @@
    * @example
    * hash.toString();
    */
-  Md5.prototype.toString = Md5.prototype.hex;
+  Md5.prototype.toString = function(enc) {
+    if (enc == 'hex') return this.hex();
+    if (enc == 'base64') return btoa(this.digest().reduce((data, byte) => data + String.fromCharCode(byte), ''));
+    return this.hex(); // by default (for not modifying all tests), I'd prefer .digest() by default
+  }
 
   /**
    * @method digest
