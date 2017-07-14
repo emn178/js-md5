@@ -6,6 +6,15 @@ node_js:
 before_install:
   - npm install coveralls
   - npm install mocha-lcov-reporter
+install:
+  - CXX="g++-4.8" CC="gcc-4.8" npm install
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-4.8
+    - g++-4.8
 script: npm run-script coveralls
 branches:
   only:
