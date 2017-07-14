@@ -1,5 +1,13 @@
 # Change Log
 
+## v0.5.0 / 2017-07-14
+### Added
+- support for web worker. #11
+
+### Changed
+- throw error if input type is incorrect.
+- prevent webpack to require dependencies.
+
 ## v0.4.2 / 2017-01-18
 ### Fixed
 - `root` is undefined in some special environment. #7

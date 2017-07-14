@@ -2,7 +2,7 @@
  * [js-md5]{@link https://github.com/emn178/js-md5}
  *
  * @namespace md5
- * @version 0.4.2
+ * @version 0.5.0
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2014-2017
  * @license MIT
@@ -10,10 +10,18 @@
 (function () {
   'use strict';
 
-  var root = typeof window === 'object' ? window : {};
+  var ERROR = 'input is invalid type';
+  var WINDOW = typeof window === 'object';
+  var root = WINDOW ? window : {};
+  if (root.JS_MD5_NO_WINDOW) {
+    WINDOW = false;
+  }
+  var WEB_WORKER = !WINDOW && typeof self === 'object';
   var NODE_JS = !root.JS_MD5_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
   if (NODE_JS) {
     root = global;
+  } else if (WEB_WORKER) {
+    root = self;
   }
   var COMMON_JS = !root.JS_MD5_NO_COMMON_JS && typeof module === 'object' && module.exports;
   var AMD = typeof define === 'function' && define.amd;
@@ -28,6 +36,12 @@
     var buffer = new ArrayBuffer(68);
     buffer8 = new Uint8Array(buffer);
     blocks = new Uint32Array(buffer);
+  }
+
+  if (root.JS_MD5_NO_NODE_JS || !Array.isArray) {
+    Array.isArray = function (obj) {
+      return Object.prototype.toString.call(obj) === '[object Array]';
+    };
   }
 
   /**
@@ -123,17 +137,24 @@
   };
 
   var nodeWrap = function (method) {
-    var crypto = require('crypto');
-    var Buffer = require('buffer').Buffer;
+    var crypto = eval("require('crypto')");
+    var Buffer = eval("require('buffer').Buffer");
     var nodeMethod = function (message) {
       if (typeof message === 'string') {
         return crypto.createHash('md5').update(message, 'utf8').digest('hex');
-      } else if (message.constructor === ArrayBuffer) {
-        message = new Uint8Array(message);
-      } else if (message.length === undefined) {
+      } else {
+        if (message === null || message === undefined) {
+          throw ERROR;
+        } else if (message.constructor === ArrayBuffer) {
+          message = new Uint8Array(message);
+        }
+      }
+      if (Array.isArray(message) || ArrayBuffer.isView(message) ||
+        message.constructor === Buffer) {
+        return crypto.createHash('md5').update(new Buffer(message)).digest('hex');
+      } else {
         return method(message);
       }
-      return crypto.createHash('md5').update(new Buffer(message)).digest('hex');
     };
     return nodeMethod;
   };
@@ -180,10 +201,22 @@
       return;
     }
     var notString = typeof(message) != 'string';
-    if (notString && message.constructor == root.ArrayBuffer) {
-      message = new Uint8Array(message);
+    if (notString) {
+      if (message === null || message === undefined) {
+        throw ERROR;
+      } else if (message.constructor === root.ArrayBuffer) {
+        message = new Uint8Array(message);
+      }
     }
-    var code, index = 0, i, length = message.length || 0, blocks = this.blocks;
+    var length = message.length;
+    if (notString) {
+      if (typeof length !== 'number' ||
+        !Array.isArray(message) && 
+        !(ARRAY_BUFFER && ArrayBuffer.isView(message))) {
+        throw ERROR;
+      }
+    }
+    var code, index = 0, i, blocks = this.blocks;
     var buffer8 = this.buffer8;
 
     while (index < length) {

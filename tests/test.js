@@ -42,28 +42,29 @@
       'd41d8cd98f00b204e9800998ecf8427e': [],
       '93b885adfe0da089cdf634904fd59f71': [0],
       '9e107d9d372bb6826bd81d3542a419d6': [84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103]
-    },
-    'Uint8Array': {
-      '9e107d9d372bb6826bd81d3542a419d6': new Uint8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])
-    },
-    'Int8Array': {
-      '9e107d9d372bb6826bd81d3542a419d6': new Int8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])
-    },
-    'ArrayBuffer': {
-      '93b885adfe0da089cdf634904fd59f71': new ArrayBuffer(1)
-    },
-    'Object': {
-      'd41d8cd98f00b204e9800998ecf8427e': {},
-      'd41d8cd98f00b204e9800998ecf8427e': {what: 'ever'}
     }
   };
 
-  if (typeof process == 'object') {
+  if (!(typeof JS_MD5_NO_ARRAY_BUFFER === 'boolean' && JS_MD5_NO_ARRAY_BUFFER)) {
+    testCases['Uint8Array'] = {
+      '9e107d9d372bb6826bd81d3542a419d6': new Uint8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])
+    };
+    testCases['Int8Array'] = {
+      '9e107d9d372bb6826bd81d3542a419d6': new Int8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])
+    };
+    testCases['ArrayBuffer'] = {
+      '93b885adfe0da089cdf634904fd59f71': new ArrayBuffer(1)
+    };
+  }
+
+  if (typeof BUFFER === 'boolean' && BUFFER) {
     testCases['Buffer'] = {
       'd41d8cd98f00b204e9800998ecf8427e': new Buffer(0),
       '9e107d9d372bb6826bd81d3542a419d6': new Buffer(new Uint8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103]))
     }
   }
+
+  var errorTestCases = [null, undefined, { length: 0 }, 0, 1, false, true, NaN, Infinity, function () {}];
 
   var methods = [
     {
@@ -154,26 +155,26 @@
     }
   ];
 
-  methods.forEach(function (method) {
-    describe('#' + method.name, function () {
-      for (var testCaseName in testCases) {
-        (function (testCaseName) {
-          var testCase = testCases[testCaseName];
-          context('when ' + testCaseName, function () {
-            for (var hash in testCase) {
-              (function (message, hash) {
-                it('should be equal', function () {
-                  expect(method.call(message)).to.be(hash);
-                });
-              })(testCase[hash], hash);
-            }
-          });
-        })(testCaseName);
-      }
+  describe('md5', function () {
+    methods.forEach(function (method) {
+      describe('#' + method.name, function () {
+        for (var testCaseName in testCases) {
+          (function (testCaseName) {
+            var testCase = testCases[testCaseName];
+            context('when ' + testCaseName, function () {
+              for (var hash in testCase) {
+                (function (message, hash) {
+                  it('should be equal', function () {
+                    expect(method.call(message)).to.be(hash);
+                  });
+                })(testCase[hash], hash);
+              }
+            });
+          })(testCaseName);
+        }
+      });
     });
-  });
 
-  describe('Md5', function () {
     classMethods.forEach(function (method) {
       describe('#' + method.name, function () {
         for (var testCaseName in testCases) {
@@ -190,6 +191,18 @@
             });
           })(testCaseName);
         }
+      });
+    });
+
+    describe('#md5', function () {
+      errorTestCases.forEach(function (testCase) {
+        context('when ' + testCase, function () {
+          it('should throw error', function () {
+            expect(function () {
+              md5(testCase);
+            }).to.throwError(/input is invalid type/);
+          });
+        });
       });
     });
   });
