@@ -45,6 +45,43 @@
     }
   };
 
+
+  var base64TestCases = {
+    'ascii': {
+      '1B2M2Y8AsgTpgAmY7PhCfg==': '',
+      'nhB9nTcrtoJr2B01QqQZ1g==': 'The quick brown fox jumps over the lazy dog',
+      '5NkJwpDQ+xygaP+t3yLL0A==': 'The quick brown fox jumps over the lazy dog.'
+    },
+    'ascii more than 64 bytes': {
+      '9jhy73vJeoqOrbpvCIHeUw==': 'The MD5 message-digest algorithm is a widely used cryptographic hash function producing a 128-bit (16-byte) hash value, typically expressed in text format as a 32 digit hexadecimal number. MD5 has been utilized in a wide variety of cryptographic applications, and is also commonly used to verify data integrity.'
+    },
+    'UTF8': {
+      'p7rCI5/NyzoGeQPYB3xKBw==': '中文',
+      '7D7b87BaRJ/CBqATjHOcOw==': 'aécio',
+      'uQhpqvEhIQ9sVjlz+oVWUA==': '𠜎'
+    },
+    'UTF8 more than 64 bytes': {
+      '7c5hWxeebim+IxRbd+u9YQ==': '訊息摘要演算法第五版（英語：Message-Digest Algorithm 5，縮寫為MD5），是當前電腦領域用於確保資訊傳輸完整一致而廣泛使用的雜湊演算法之一',
+      'rTbJq2aaC6nORtPOkTTeNA==': '訊息摘要演算法第五版（英語：Message-Digest Algorithm 5，縮寫為MD5），是當前電腦領域用於確保資訊傳輸完整一致而廣泛使用的雜湊演算法之一（又譯雜湊演算法、摘要演算法等），主流程式語言普遍已有MD5的實作。'
+    },
+    'special length': {
+      'oRneY+SyOYQn2gbdeAJjsw==': '0123456780123456780123456780123456780123456780123456780',
+      '3a/YTr5jrrxGJrA3pWnXiw==': '01234567801234567801234567801234567801234567801234567801',
+      'nqBNdDYYeXzkZERbV4WmMA==': '0123456780123456780123456780123456780123456780123456780123456780',
+      'ZY2RSuQsSTiHSy54bM2keQ==': '01234567801234567801234567801234567801234567801234567801234567801234567',
+      'oIOjcQ1oV5Px8XmIv+PBdQ==': '012345678012345678012345678012345678012345678012345678012345678012345678',
+      'KyGoQ8/DHIAmoNg1vJG8mA==': '012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678012345678',
+      '0C696XkmTHnhQVWfyfa2XA==': '012345678901234567',
+      'HO2BGvR+rTdIcvzKnXPdcQ==': '012345678901234567890123456789012345678901234567890123456789',
+      '/7gaJDpg2sRZKTAIc+BShw==': '012345678901234567中文',
+    },
+    'Array': {
+      '1B2M2Y8AsgTpgAmY7PhCfg==': [],
+      'k7iFrf4NoInN9jSQT9WfcQ==': [0],
+      'nhB9nTcrtoJr2B01QqQZ1g==': [84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103]
+    }
+  };
+
   if (!(typeof JS_MD5_NO_ARRAY_BUFFER === 'boolean' && JS_MD5_NO_ARRAY_BUFFER)) {
     testCases['Uint8Array'] = {
       '9e107d9d372bb6826bd81d3542a419d6': new Uint8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])
@@ -204,6 +241,24 @@
           });
         });
       });
+    });
+
+
+    describe('#bas64', function () {
+      for (var testCaseName in base64TestCases) {
+        var testCase = base64TestCases[testCaseName];
+        context('when ' + testCaseName, function () {
+          for (var hash in testCase) {
+            (function (message, hash) {
+              it('should be equal', function () {
+                expect(md5.base64(message)).to.be(hash);
+                expect(md5.create().update(message).base64()).to.be(hash);
+                expect(md5.update(message).base64()).to.be(hash);
+              });
+            })(testCase[hash], hash);
+          }
+        });
+      }
     });
   });
 })(md5);

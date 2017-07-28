@@ -65,6 +65,7 @@ md5.array(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 248
 md5.digest(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 248, 66, 126]
 md5.arrayBuffer(''); // ArrayBuffer
 md5.buffer(''); // ArrayBuffer, deprecated, This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
+md5.base64(''); // 1B2M2Y8AsgTpgAmY7PhCfg==
 ```
 
 ## License

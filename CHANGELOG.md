@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.6.0 / 2017-07-28
+### Added
+- support base64 string output.
+
 ## v0.5.0 / 2017-07-14
 ### Added
 - support for web worker. #11
