@@ -70,6 +70,8 @@ SOURCE = 'src/md5.js';
 
 require('./worker-test.js');
 
+delete require.cache[require.resolve('./worker-test.js')];
+
 // cover webworker
 JS_MD5_NO_WINDOW = true;
 JS_MD5_NO_NODE_JS = true;
