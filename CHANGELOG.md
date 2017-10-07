@@ -1,5 +1,12 @@
 # Change Log
 
+## v0.6.1 / 2017-10-07
+### Fixed
+- ArrayBuffer.isView issue in IE10.
+
+### Improved
+- performance of input check.
+
 ## v0.6.0 / 2017-07-28
 ### Added
 - support base64 string output.

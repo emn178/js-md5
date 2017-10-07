@@ -1,56 +1,60 @@
 expect = require('expect.js');
 Worker = require('webworker-threads').Worker;
 
+function unset() {
+  delete require.cache[require.resolve('../src/md5.js')];
+  delete require.cache[require.resolve('./test.js')];
+  md5 = null;
+  BUFFER = undefined;
+  JS_MD5_NO_WINDOW = undefined;
+  JS_MD5_NO_NODE_JS = undefined;
+  JS_MD5_NO_COMMON_JS = undefined;
+  JS_MD5_NO_ARRAY_BUFFER = undefined;
+  JS_MD5_NO_ARRAY_BUFFER_IS_VIEW = undefined;
+  window = undefined;
+}
+
+function runCommonJsTest() {
+  md5 = require('../src/md5.js');
+  require('./test.js');
+  unset();
+}
+
+function runWindowTest() {
+  window = global;
+  require('../src/md5.js');
+  require('./test.js');
+  unset();
+}
+
 // Node.js env
 BUFFER = true;
-md5 = require('../src/md5.js');
-require('./test.js');
-
-delete require.cache[require.resolve('../src/md5.js')]
-delete require.cache[require.resolve('./test.js')]
-md5 = null
+runCommonJsTest();
 
 // Webpack browser env
 JS_MD5_NO_NODE_JS = true;
-BUFFER = false;
-window = global;
-md5 = require('../src/md5.js');
-require('./test.js');
-
-delete require.cache[require.resolve('../src/md5.js')];
-delete require.cache[require.resolve('./test.js')];
-md5 = null;
+runCommonJsTest();
 
 // browser env
 JS_MD5_NO_NODE_JS = true;
 JS_MD5_NO_COMMON_JS = true;
-BUFFER = false;
-window = global;
-require('../src/md5.js');
-require('./test.js');
-
-delete require.cache[require.resolve('../src/md5.js')];
-delete require.cache[require.resolve('./test.js')];
-md5 = null;
+runWindowTest();
 
 // browser env and no array buffer
 JS_MD5_NO_NODE_JS = true;
 JS_MD5_NO_COMMON_JS = true;
 JS_MD5_NO_ARRAY_BUFFER = true;
-BUFFER = false;
-window = global;
-require('../src/md5.js');
-require('./test.js');
+runWindowTest();
 
-delete require.cache[require.resolve('../src/md5.js')];
-delete require.cache[require.resolve('./test.js')];
-md5 = null;
+// browser env and no isView
+JS_MD5_NO_NODE_JS = true;
+JS_MD5_NO_COMMON_JS = true;
+JS_MD5_NO_ARRAY_BUFFER_IS_VIEW = true;
+runWindowTest();
 
 // browser AMD
 JS_MD5_NO_NODE_JS = true;
 JS_MD5_NO_COMMON_JS = true;
-JS_MD5_NO_ARRAY_BUFFER = false;
-BUFFER = false;
 window = global;
 define = function (func) {
   md5 = func();
@@ -59,10 +63,7 @@ define = function (func) {
 define.amd = true;
 
 require('../src/md5.js');
-
-delete require.cache[require.resolve('../src/md5.js')];
-delete require.cache[require.resolve('./test.js')];
-md5 = null;
+unset();
 
 // webworker
 WORKER = 'tests/worker.js';
@@ -75,9 +76,6 @@ delete require.cache[require.resolve('./worker-test.js')];
 // cover webworker
 JS_MD5_NO_WINDOW = true;
 JS_MD5_NO_NODE_JS = true;
-JS_MD5_NO_COMMON_JS = false;
-JS_MD5_NO_ARRAY_BUFFER = false;
-BUFFER = false;
 WORKER = './worker.js';
 SOURCE = '../src/md5.js';
 window = global;
