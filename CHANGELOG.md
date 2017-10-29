@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.7.1 / 2017-10-29
+### Fixed
+- incorrect result when file size >= 4G.
+
 ## v0.7.0 / 2017-10-29
 ### Fixed
 - incorrect result when file size >= 512M.

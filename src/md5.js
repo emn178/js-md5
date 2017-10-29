@@ -2,7 +2,7 @@
  * [js-md5]{@link https://github.com/emn178/js-md5}
  *
  * @namespace md5
- * @version 0.7.0
+ * @version 0.7.1
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2014-2017
  * @license MIT
@@ -198,7 +198,7 @@
         this.blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
       }
     }
-    this.h0 = this.h1 = this.h2 = this.h3 = this.start = this.bytes = 0;
+    this.h0 = this.h1 = this.h2 = this.h3 = this.start = this.bytes = this.hBytes = 0;
     this.finalized = this.hashed = false;
     this.first = true;
   }
@@ -302,6 +302,10 @@
       }
       this.lastByteIndex = i;
       this.bytes += i - this.start;
+      while (this.bytes > 4294967295) {
+        ++this.hBytes;
+        this.bytes -= 4294967296;
+      }
       if (i >= 64) {
         this.start = i - 64;
         this.hash();
@@ -331,7 +335,7 @@
       blocks[12] = blocks[13] = blocks[14] = blocks[15] = 0;
     }
     blocks[14] = this.bytes << 3;
-    blocks[15] = this.bytes >> 29;
+    blocks[15] = this.hBytes << 3 | this.bytes >> 29;
     this.hash();
   };
 

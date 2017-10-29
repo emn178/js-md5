@@ -241,8 +241,14 @@
           });
         });
       });
-    });
 
+      context('when large size', function () {
+        var hash = md5.create();
+        hash.bytes = 4294967295;
+        hash.update('any');
+        expect(hash.hBytes).to.be(1);
+      });
+    });
 
     describe('#bas64', function () {
       for (var testCaseName in base64TestCases) {
