@@ -2,7 +2,7 @@
  * [js-md5]{@link https://github.com/emn178/js-md5}
  *
  * @namespace md5
- * @version 0.6.1
+ * @version 0.7.0
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2014-2017
  * @license MIT
@@ -331,6 +331,7 @@
       blocks[12] = blocks[13] = blocks[14] = blocks[15] = 0;
     }
     blocks[14] = this.bytes << 3;
+    blocks[15] = this.bytes >> 29;
     this.hash();
   };
 

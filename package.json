@@ -1,6 +1,6 @@
 {
   "name": "js-md5",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "A simple MD5 hash function for JavaScript supports UTF-8 encoding.",
   "main": "src/md5.js",
   "devDependencies": {
