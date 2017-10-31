@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.7.2 / 2017-10-31
+### Improved
+- performance of hBytes increment.
+
 ## v0.7.1 / 2017-10-29
 ### Fixed
 - incorrect result when file size >= 4G.
