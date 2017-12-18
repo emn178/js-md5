@@ -1,23 +1,23 @@
 {
   "name": "js-md5",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "A simple MD5 hash function for JavaScript supports UTF-8 encoding.",
   "main": "src/md5.js",
   "devDependencies": {
     "expect.js": "~0.3.1",
-    "jscoverage": "~0.5.9",
     "jsdoc": "^3.4.0",
     "mocha": "~2.3.4",
+    "nyc": "^11.3.0",
     "requirejs": "^2.1.22",
-    "uglify-js": "~2.4.10",
+    "uglify-js": "^3.1.9",
     "webworker-threads": "^0.7.11"
   },
   "scripts": {
-    "test": "mocha tests/node-test.js -r jscoverage",
-    "report": "mocha tests/node-test.js -r jscoverage --covout=html",
-    "coveralls": "mocha tests/node-test.js -R mocha-lcov-reporter -r jscoverage | coveralls",
+    "test": "nyc mocha tests/node-test.js",
+    "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "doc": "rm -rf doc;jsdoc src README.md -d doc",
-    "compress": "uglifyjs src/md5.js --compress --mangle --comments --output build/md5.min.js",
+    "compress": "uglifyjs src/md5.js -c -m eval --comments --output build/md5.min.js",
     "build": "npm run-script compress;npm run-script doc"
   },
   "repository": {
@@ -36,5 +36,10 @@
   "homepage": "https://github.com/emn178/js-md5",
   "bugs": {
     "url": "https://github.com/emn178/js-md5/issues"
+  },
+  "nyc": {
+    "exclude": [
+      "tests"
+    ]
   }
 }

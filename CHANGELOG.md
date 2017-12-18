@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.7.3 / 2017-12-18
+### Fixed
+- incorrect result when first bit is 1 of bytes. #18
+
 ## v0.7.2 / 2017-10-31
 ### Improved
 - performance of hBytes increment.
