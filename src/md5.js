@@ -204,6 +204,37 @@
   }
 
   /**
+   * @method clone
+   * @memberof Md5
+   * @description Return a copy of this object
+   * @returns {Md5} Md5 object
+   * @example
+   * hash.clone();
+   */
+  Md5.prototype.clone = function() {
+    let nMd5 = new Md5();
+    if (ARRAY_BUFFER) {
+      var buffer = this.buffer8.buffer.slice();
+      nMd5.buffer8 = new Uint8Array(buffer);
+      nMd5.blocks = new Uint32Array(buffer);
+    } else {
+      nMd5.blocks = this.blocks.slice();
+    }
+    nMd5.bytes = this.bytes;
+    nMd5.finalized = this.finalized;
+    nMd5.first = this.first;
+    nMd5.h0 = this.h0;
+    nMd5.h1 = this.h1;
+    nMd5.h2 = this.h2;
+    nMd5.h3 = this.h3;
+    nMd5.hBytes = this.hBytes;
+    nMd5.hashed = this.hashed;
+    nMd5.start = this.start;
+    nMd5.lastByteIndex = this.lastByteIndex;
+    return nMd5;
+  }
+
+  /**
    * @method update
    * @memberof Md5
    * @instance

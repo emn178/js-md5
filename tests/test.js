@@ -189,6 +189,14 @@
         hash.update(message);
         return hash.hex();
       }
+    },
+    {
+      name: 'clone',
+      call: function (message) {
+        var hash = md5.update(message);
+        var copy = hash.clone();
+        return copy.hex();
+      }
     }
   ];
 
