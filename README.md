@@ -1,16 +1,19 @@
+MyCrypto: This is a modified version of **js-md5**.
+The **eval()** function was removed due to security concerns.
+
 # js-md5
 [![Build Status](https://travis-ci.org/emn178/js-md5.svg?branch=master)](https://travis-ci.org/emn178/js-md5)
-[![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)  
+[![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)
 [![NPM](https://nodei.co/npm/js-md5.png?stars&downloads)](https://nodei.co/npm/js-md5/)
 
 A simple MD5 hash function for JavaScript supports UTF-8 encoding.
 
 ## Demo
-[MD5 Online](http://emn178.github.io/online-tools/md5.html)  
+[MD5 Online](http://emn178.github.io/online-tools/md5.html)
 [MD5 File Checksum Online](http://emn178.github.io/online-tools/md5_checksum.html)
 
 ## Download
-[Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)  
+[Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)
 [Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
 
 ## Installation
@@ -72,5 +75,5 @@ md5.base64(''); // 1B2M2Y8AsgTpgAmY7PhCfg==
 The project is released under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 ## Contact
-The project's website is located at https://github.com/emn178/js-md5  
+The project's website is located at https://github.com/emn178/js-md5
 Author: Chen, Yi-Cyuan (emn178@gmail.com)
