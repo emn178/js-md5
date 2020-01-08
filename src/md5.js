@@ -153,8 +153,8 @@
   };
 
   var nodeWrap = function (method) {
-    var crypto = eval("require('crypto')");
-    var Buffer = eval("require('buffer').Buffer");
+    var crypto = require('crypto');
+    var Buffer = require('buffer').Buffer;
     var nodeMethod = function (message) {
       if (typeof message === 'string') {
         return crypto.createHash('md5').update(message, 'utf8').digest('hex');
