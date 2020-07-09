@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)  
 [![NPM](https://nodei.co/npm/js-md5.png?stars&downloads)](https://nodei.co/npm/js-md5/)
 
-A simple MD5 hash function for JavaScript supports UTF-8 encoding.
+A simple and [ultra-fast](https://github.com/emn178/js-md5/issues/19) MD5 hash function for JavaScript supports UTF-8 encoding.
 
 ## Demo
 [MD5 Online](http://emn178.github.io/online-tools/md5.html)  
