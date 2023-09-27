@@ -14,7 +14,7 @@
     mocha.setup('bdd');
     require(['../src/md5.js'], function (md5) {
       window.md5 = md5;
-      require(['test.js'], function () {
+      require(['test.js', 'hmac-test.js'], function () {
         mocha.checkLeaks();
         mocha.run();
       });

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: md5</title>
+    <title>JSDoc: Namespace: hmac</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Namespace: md5</h1>
+    <h1 class="page-title">Namespace: hmac</h1>
 
     
 
@@ -28,7 +28,8 @@
 
 <header>
     
-        <h2>md5</h2>
+        <h2>
+            <span class="ancestors"><a href="md5_.html">md5</a>.</span>hmac</h2>
         
     
 </header>
@@ -37,8 +38,6 @@
     <div class="container-overview">
     
         
-            <div class="description"><a href="https://github.com/emn178/js-md5">js-md5</a></div>
-        
 
         
 
@@ -46,9 +45,6 @@
 <dl class="details">
 
     
-    <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.8.0</li></ul></dd>
-    
 
     
 
@@ -65,22 +61,9 @@
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li>Chen, Yi-Cyuan [emn178@gmail.com]</li>
-        </ul>
-    </dd>
-    
 
     
-    <dt class="tag-copyright">Copyright:</dt>
-    <dd class="tag-copyright"><ul class="dummy"><li>Chen, Yi-Cyuan 2014-2023</li></ul></dd>
-    
 
-    
-    <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
     
 
     
@@ -88,7 +71,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line1">line 1</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line207">line 207</a>
     </li></ul></dd>
     
 
@@ -115,13 +98,6 @@
     
 
     
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="md5.hmac.html">hmac</a></dt>
-            <dd></dd>
-        </dl>
-    
 
     
 
@@ -134,7 +110,7 @@
     
 
     
-    <h4 class="name" id=".array"><span class="type-signature">(static) </span>array<span class="signature">(message)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".array"><span class="type-signature">(static) </span>array<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
     
@@ -174,6 +150,38 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -244,7 +252,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line95">line 95</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line233">line 233</a>
     </li></ul></dd>
     
 
@@ -297,7 +305,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.array('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>md5.hmac.array('key', 'The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -307,7 +315,7 @@
     
 
     
-    <h4 class="name" id=".arrayBuffer"><span class="type-signature">(static) </span>arrayBuffer<span class="signature">(message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
+    <h4 class="name" id=".arrayBuffer"><span class="type-signature">(static) </span>arrayBuffer<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
     
 
     
@@ -347,6 +355,38 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -417,7 +457,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line104">line 104</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line243">line 243</a>
     </li></ul></dd>
     
 
@@ -470,7 +510,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.arrayBuffer('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>md5.hmac.arrayBuffer('key', 'The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -480,7 +520,7 @@
     
 
     
-    <h4 class="name" id=".base64"><span class="type-signature">(static) </span>base64<span class="signature">(message)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".base64"><span class="type-signature">(static) </span>base64<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -520,6 +560,38 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -590,7 +662,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line123">line 123</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line264">line 264</a>
     </li></ul></dd>
     
 
@@ -643,7 +715,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.base64('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>md5.hmac.base64('key', 'The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -653,7 +725,7 @@
     
 
     
-    <h4 class="name" id=".buffer"><span class="type-signature">(static) </span>buffer<span class="signature">(message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
+    <h4 class="name" id=".buffer"><span class="type-signature">(static) </span>buffer<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {ArrayBuffer}</span></h4>
     
 
     
@@ -693,6 +765,38 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -765,7 +869,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line113">line 113</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line253">line 253</a>
     </li></ul></dd>
     
 
@@ -818,7 +922,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.buffer('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>md5.hmac.buffer('key', 'The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -828,7 +932,7 @@
     
 
     
-    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Md5.html">Md5</a>}</span></h4>
+    <h4 class="name" id=".create"><span class="type-signature">(static) </span>create<span class="signature">(key)</span><span class="type-signature"> &rarr; {<a href="HmacMd5.html">HmacMd5</a>}</span></h4>
     
 
     
@@ -836,7 +940,7 @@
 
 
 <div class="description">
-    Create Md5 object
+    Create HmacMd5 object
 </div>
 
 
@@ -845,6 +949,64 @@
 
 
 
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -880,7 +1042,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line138">line 138</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -909,7 +1071,7 @@
 
         
 <div class="param-desc">
-    Md5 object.
+    HmacMd5 object.
 </div>
 
 
@@ -920,7 +1082,7 @@
     </dt>
     <dd>
         
-<span class="param-type"><a href="Md5.html">Md5</a></span>
+<span class="param-type"><a href="HmacMd5.html">HmacMd5</a></span>
 
 
     </dd>
@@ -933,7 +1095,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var hash = md5.create();</code></pre>
+    <pre class="prettyprint"><code>var hash = md5.hmac.create('key');</code></pre>
 
 
 
@@ -943,7 +1105,7 @@
     
 
     
-    <h4 class="name" id=".digest"><span class="type-signature">(static) </span>digest<span class="signature">(message)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id=".digest"><span class="type-signature">(static) </span>digest<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
     
@@ -983,6 +1145,38 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -1053,7 +1247,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line86">line 86</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line223">line 223</a>
     </li></ul></dd>
     
 
@@ -1106,7 +1300,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.digest('The quick brown fox jumps over the lazy dog');</code></pre>
+    <pre class="prettyprint"><code>md5.hmac.digest('key', 'The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -1116,7 +1310,7 @@
     
 
     
-    <h4 class="name" id=".hex"><span class="type-signature">(static) </span>hex<span class="signature">(message)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id=".hex"><span class="type-signature">(static) </span>hex<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {String}</span></h4>
     
 
     
@@ -1156,6 +1350,38 @@
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -1226,7 +1452,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line75">line 75</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line210">line 210</a>
     </li></ul></dd>
     
 
@@ -1279,9 +1505,9 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>md5.hex('The quick brown fox jumps over the lazy dog');
+    <pre class="prettyprint"><code>md5.hmac.hex('key', 'The quick brown fox jumps over the lazy dog');
 // equal to
-md5('The quick brown fox jumps over the lazy dog');</code></pre>
+md5.hmac('key', 'The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 
@@ -1291,7 +1517,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
     
 
     
-    <h4 class="name" id=".update"><span class="type-signature">(static) </span>update<span class="signature">(message)</span><span class="type-signature"> &rarr; {<a href="Md5.html">Md5</a>}</span></h4>
+    <h4 class="name" id=".update"><span class="type-signature">(static) </span>update<span class="signature">(key, message)</span><span class="type-signature"> &rarr; {<a href="HmacMd5.html">HmacMd5</a>}</span></h4>
     
 
     
@@ -1299,7 +1525,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
 
 
 <div class="description">
-    Create and update Md5 object
+    Create and update HmacMd5 object
 </div>
 
 
@@ -1331,6 +1557,38 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Uint8Array</span>
+|
+
+<span class="param-type">ArrayBuffer</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">key</td>
+        </tr>
+
     
 
         <tr>
@@ -1401,7 +1659,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line146">line 146</a>
+        <a href="md5.js.html">md5.js</a>, <a href="md5.js.html#line289">line 289</a>
     </li></ul></dd>
     
 
@@ -1430,7 +1688,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
 
         
 <div class="param-desc">
-    Md5 object.
+    HmacMd5 object.
 </div>
 
 
@@ -1441,7 +1699,7 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
     </dt>
     <dd>
         
-<span class="param-type"><a href="Md5.html">Md5</a></span>
+<span class="param-type"><a href="HmacMd5.html">HmacMd5</a></span>
 
 
     </dd>
@@ -1454,9 +1712,9 @@ md5('The quick brown fox jumps over the lazy dog');</code></pre>
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>var hash = md5.update('The quick brown fox jumps over the lazy dog');
+    <pre class="prettyprint"><code>var hash = md5.hmac.update('key', 'The quick brown fox jumps over the lazy dog');
 // equal to
-var hash = md5.create();
+var hash = md5.hmac.create('key');
 hash.update('The quick brown fox jumps over the lazy dog');</code></pre>
 
 

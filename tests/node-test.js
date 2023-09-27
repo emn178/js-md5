@@ -1,9 +1,10 @@
 expect = require('expect.js');
-Worker = require('webworker-threads').Worker;
+Worker = require("tiny-worker");
 
 function unset() {
   delete require.cache[require.resolve('../src/md5.js')];
   delete require.cache[require.resolve('./test.js')];
+  delete require.cache[require.resolve('./hmac-test.js')];
   md5 = null;
   BUFFER = undefined;
   JS_MD5_NO_WINDOW = undefined;
@@ -17,6 +18,7 @@ function unset() {
 function runCommonJsTest() {
   md5 = require('../src/md5.js');
   require('./test.js');
+  require('./hmac-test.js');
   unset();
 }
 
@@ -24,11 +26,16 @@ function runWindowTest() {
   window = global;
   require('../src/md5.js');
   require('./test.js');
+  require('./hmac-test.js');
   unset();
 }
 
 // Node.js env
 BUFFER = true;
+runCommonJsTest();
+
+// Node.js env, no Buffer.from
+JS_MD5_NO_BUFFER_FROM = true
 runCommonJsTest();
 
 // Webpack browser env
@@ -59,6 +66,7 @@ window = global;
 define = function (func) {
   md5 = func();
   require('./test.js');
+  require('./hmac-test.js');
 };
 define.amd = true;
 

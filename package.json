@@ -1,16 +1,16 @@
 {
   "name": "js-md5",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "description": "A simple MD5 hash function for JavaScript supports UTF-8 encoding.",
   "main": "src/md5.js",
   "devDependencies": {
     "expect.js": "~0.3.1",
-    "jsdoc": "^3.4.0",
+    "jsdoc": "~4.0.2",
     "mocha": "~10.2.0",
     "nyc": "^15.1.0",
     "requirejs": "^2.1.22",
-    "uglify-js": "^3.1.9",
-    "webworker-threads": "^0.7.11"
+    "tiny-worker": "^2.3.0",
+    "uglify-js": "^3.1.9"
   },
   "scripts": {
     "test": "nyc mocha tests/node-test.js",

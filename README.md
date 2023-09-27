@@ -32,11 +32,22 @@ md5('Message to hash');
 var hash = md5.create();
 hash.update('Message to hash');
 hash.hex();
+
+// HMAC
+md5.hmac('key', 'Message to hash');
+
+var hash = md5.hmac.create('key');
+hash.update('Message to hash');
+hash.hex();
 ```
+
+### Node.js
 If you use node.js, you should require the module first:
 ```JavaScript
-md5 = require('js-md5');
+var md5 = require('js-md5');
 ```
+
+## RequireJS
 It supports AMD:
 ```JavaScript
 require(['your/path/md5.js'], function(md5) {
@@ -66,10 +77,15 @@ md5.digest(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 24
 md5.arrayBuffer(''); // ArrayBuffer
 md5.buffer(''); // ArrayBuffer, deprecated, This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
 md5.base64(''); // 1B2M2Y8AsgTpgAmY7PhCfg==
+
+// HMAC
+md5.hmac.hex('key', 'Message to hash');
+md5.hmac.array('key', 'Message to hash');
+// ...
 ```
 
 ## License
-The project is released under the [MIT license](http://www.opensource.org/licenses/MIT).
+The project is released under the [MIT license](https://opensource.org/license/mit/).
 
 ## Contact
 The project's website is located at https://github.com/emn178/js-md5  

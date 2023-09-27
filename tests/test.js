@@ -96,8 +96,8 @@
 
   if (typeof BUFFER === 'boolean' && BUFFER) {
     testCases['Buffer'] = {
-      'd41d8cd98f00b204e9800998ecf8427e': new Buffer(0),
-      '9e107d9d372bb6826bd81d3542a419d6': new Buffer(new Uint8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103]))
+      'd41d8cd98f00b204e9800998ecf8427e': Buffer.from([]),
+      '9e107d9d372bb6826bd81d3542a419d6': Buffer.from(new Uint8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103]))
     }
   }
 
@@ -186,7 +186,6 @@
       call: function (message) {
         var hash = md5.update(message);
         hash.hex();
-        hash.update(message);
         return hash.hex();
       }
     }
@@ -239,6 +238,16 @@
               md5(testCase);
             }).to.throwError(/input is invalid type/);
           });
+        });
+      });
+
+      context('when update after finalize', function () {
+        it('should throw error', function () {
+          expect(function () {
+            var hash = md5.update('any');
+            hash.hex();
+            hash.update('any');
+          }).to.throwError(/finalize already called/);
         });
       });
 

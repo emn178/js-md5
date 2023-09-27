@@ -1,5 +1,22 @@
 # Change Log
 
+## v0.8.0 / 2023-09-27
+### Added
+- TypeScript interfaces.
+- HMAC feature.
+
+### Fixed
+- deprecated `new Buffer`, replace with `Buffer.from`.
+- dependencies and security issues.
+- don't modify global Array and ArrayBuffer prototypes.
+- refactor: simplify formatMessage internal logic.
+
+### Changed
+- remove `eval` and use `require` directly.
+- throw error by Error oject.
+- throw error if update after finalize
+- use unsigned right shift.
+
 ## v0.7.3 / 2017-12-18
 ### Fixed
 - incorrect result when first bit is 1 of bytes. #18
