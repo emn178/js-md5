@@ -14,7 +14,7 @@ A simple and fast MD5 hash function for JavaScript supports UTF-8 encoding.
 [Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
 
 ## Benchmark
-[jsPerf Benchmark](https://jsperf.app/jonuhi)
+[jsPerf Benchmark](https://jsperf.app/jonuhi)  
 [File Benchmark](https://github.com/emn178/js-md5/issues/19)
 
 ## Installation
