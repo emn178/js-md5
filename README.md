@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)  
 [![NPM](https://nodei.co/npm/js-md5.png?stars&downloads)](https://nodei.co/npm/js-md5/)
 
-A simple MD5 hash function for JavaScript supports UTF-8 encoding.
+A simple and fast MD5 hash function for JavaScript supports UTF-8 encoding.
 
 ## Demo
 [MD5 Online](http://emn178.github.io/online-tools/md5.html)  
@@ -12,6 +12,10 @@ A simple MD5 hash function for JavaScript supports UTF-8 encoding.
 ## Download
 [Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)  
 [Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
+
+## Benchmark
+[jsPerf Benchmark](https://jsperf.app/jonuhi)
+[File Benchmark](https://github.com/emn178/js-md5/issues/19)
 
 ## Installation
 You can also install js-md5 by using Bower.
@@ -45,6 +49,12 @@ hash.hex();
 If you use node.js, you should require the module first:
 ```JavaScript
 var md5 = require('js-md5');
+```
+
+### TypeScript
+If you use TypeScript, you can import like this:
+```TypeScript
+import { md5 } from 'js-md5';
 ```
 
 ## RequireJS
