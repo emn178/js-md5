@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.8.3 / 2023-10-09
+### Fixed
+- package.json main property.
+
 ## v0.8.2 / 2023-10-09
 ### Remove
 - package.json module property.
