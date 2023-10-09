@@ -1,6 +1,10 @@
 # Change Log
 
-## v0.8.1 / 2023-10-
+## v0.8.2 / 2023-10-09
+### Remove
+- package.json module property.
+
+## v0.8.1 / 2023-10-09
 ### Added
 - TypeScript base64 interfaces.
 - Disable webpack polyfill.
