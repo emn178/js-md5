@@ -1,5 +1,10 @@
 # Change Log
 
+## v0.8.1 / 2023-10-
+### Added
+- TypeScript base64 interfaces.
+- Disable webpack polyfill.
+
 ## v0.8.0 / 2023-09-27
 ### Added
 - TypeScript interfaces.

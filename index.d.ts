@@ -32,6 +32,11 @@ interface Hasher {
    * Return hash in integer array.
    */
   array(): number[];
+
+  /**
+   * Return hash in base64 string.
+   */
+  base64(): string;
 }
 
 interface Hmac {
@@ -89,6 +94,14 @@ interface Hmac {
    * @param message The message you want to hash.
    */
   array(secretKey: Message, message: Message): number[];
+
+  /**
+   * Return hash in base64 string.
+   *
+   * @param secretKey The Secret Key
+   * @param message The message you want to hash.
+   */
+  base64(secretKey: Message, message: Message): string;
 }
 
 interface Hash {
@@ -138,6 +151,13 @@ interface Hash {
    * @param message The message you want to hash.
    */
   array(message: Message): number[];
+
+  /**
+   * Return hash in base64 string.
+   *
+   * @param message The message you want to hash.
+   */
+  base64(message: Message): string;
 
   /**
    * HMAC interface
