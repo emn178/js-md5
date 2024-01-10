@@ -14,8 +14,18 @@ A simple and fast MD5 hash function for JavaScript supports UTF-8 encoding.
 [Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
 
 ## Benchmark
-[jsPerf Benchmark](https://jsperf.app/jonuhi)  
-[File Benchmark](https://github.com/emn178/js-md5/issues/19)
+- [Benchmark (measurethat.net) - Short String](https://measurethat.net/Benchmarks/Show/29171/0/md5-performance-comparison-v2)
+- [Benchmark (measurethat.net) - Long String](https://measurethat.net/Benchmarks/Show/29172/0/md5-performance-comparison-long-text-v2)
+- [Benchmark (jsperf.app) - Long String](https://jsperf.app/jonuhi/6)
+- [Benchmark (measurethat.net) - Very Long String](https://measurethat.net/Benchmarks/Show/29173/0/md5-performance-comparison-very-long-text)
+- [Benchmark (jsperf.app) - Very Long String](https://jsperf.app/jonuhi/8)
+- [Async Benchmark (measurethat.net)](https://measurethat.net/Benchmarks/Show/29176/0/md5-performance-comparison-very-long-text-v6)
+- [Async Benchmark (jsperf.app)](https://jsperf.app/jonuhi/9)
+
+* js-md5 is the fastest synchronous MD5 library, but slower than Hash-WASM 
+
+- [File Benchmark - Issue #19](https://github.com/emn178/js-md5/issues/19)
+- [File Benchmark - Issue #42](https://github.com/emn178/js-md5/issues/42)
 
 ## Installation
 You can also install js-md5 by using Bower.
