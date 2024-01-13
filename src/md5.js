@@ -10,49 +10,83 @@
 (function () {
   'use strict';
 
+  // the following variables will be set in production files (md5.min.js and md5-lite.min.js) to contants
+  // ------------------------------------------------
+  // for production of lite version, with testing
+  var NO_HMAC = typeof JS_MD5_NO_HMAC !== 'undefined' ? !!JS_MD5_NO_HMAC : false; // true for md5-lite
+  // remove support for legacy browsers like IE to minimize the output file
+  var NO_LEGACY = typeof JS_MD5_NO_LEGACY !== "undefined" ? !!JS_MD5_NO_LEGACY : false; // true for md5-lite
+
+  var NO_ARRAY_BUFFER, NO_ARRAY_BUFFER_IS_VIEW, NO_BUFFER_FROM;
+
+  if (!NO_LEGACY) {
+    // ArrayBuffer is fully adopted in all browsers in year 2012 including IE 10
+    NO_ARRAY_BUFFER = typeof JS_MD5_NO_ARRAY_BUFFER !== "undefined" ? !!JS_MD5_NO_ARRAY_BUFFER: false;
+    
+    // ArrayBuffer.isView is fully adopted in all browsers in year 2014 including IE 11
+    NO_ARRAY_BUFFER_IS_VIEW = typeof JS_MD5_NO_ARRAY_BUFFER_IS_VIEW !== "undefined" ? !!JS_MD5_NO_ARRAY_BUFFER_IS_VIEW : false;
+    // Buffer.from is Node.js function provided since 5.10.0
+    // new Buffer is depreciated since Node 10
+    NO_BUFFER_FROM = typeof JS_MD5_NO_BUFFER_FROM !== "undefined" ? !!JS_MD5_NO_BUFFER_FROM : false;
+
+  }
+
+  // for testing only
+  // var NO_ARRAY_BUFFER = typeof JS_MD5_NO_ARRAY_BUFFER !== "undefined" ? !!JS_MD5_NO_ARRAY_BUFFER : false;
+  var NO_NODE_JS = typeof JS_MD5_NO_NODE_JS !== "undefined" ? !!JS_MD5_NO_NODE_JS : false;
+  var NO_COMMON_JS = typeof JS_MD5_NO_COMMON_JS !== "undefined" ? !!JS_MD5_NO_COMMON_JS : false;
+   // force polyfill for ArrayBuffer.isView
+  // force polyfill for Buffer.from which is recommended after Node 10+
+  // ------------------------------------------------
+
+  // console.log(`${NO_HMAC?0:1}${NO_LEGACY?0:1}${NO_ARRAY_BUFFER?0:1}${NO_NODE_JS?0:1}`)
+
   var INPUT_ERROR = 'input is invalid type';
   var FINALIZE_ERROR = 'finalize already called';
-  var WINDOW = typeof window === 'object';
-  var root = WINDOW ? window : {};
-  if (root.JS_MD5_NO_WINDOW) {
-    WINDOW = false;
-  }
-  var WEB_WORKER = !WINDOW && typeof self === 'object';
-  var NODE_JS = !root.JS_MD5_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
+  var root = typeof window === 'object' ? window : {};
+  var WEB_WORKER = typeof WorkerGlobalScope !== "undefined" ? !!WorkerGlobalScope : false;
+  // if(typeof WorkerGlobalScope !== "undefined") throw "123";
+  var NODE_JS = !NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
   if (NODE_JS) {
     root = global;
   } else if (WEB_WORKER) {
     root = self;
   }
-  var COMMON_JS = !root.JS_MD5_NO_COMMON_JS && typeof module === 'object' && module.exports;
+  var COMMON_JS = !NO_COMMON_JS && typeof module === 'object' && module.exports;
   var AMD = typeof define === 'function' && define.amd;
-  var ARRAY_BUFFER = !root.JS_MD5_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
+  /** @type {ArrayBufferConstructor?} */
+  var ArrayBuffer_ = !NO_ARRAY_BUFFER ? ArrayBuffer : 0; // compatibility with old browsers 
   var HEX_CHARS = '0123456789abcdef'.split('');
   var EXTRA = [128, 32768, 8388608, -2147483648];
   var SHIFT = [0, 8, 16, 24];
   var OUTPUT_TYPES = ['hex', 'array', 'digest', 'buffer', 'arrayBuffer', 'base64'];
   var BASE64_ENCODE_CHAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
 
+  var isArray = Array.isArray; // isArray is available in all modern browser ()
+  var isView = !NO_ARRAY_BUFFER ? ArrayBuffer_.isView : undefined; // undefined if JS_MD5_NO_ARRAY_BUFFER is true
+
+  if (!NO_LEGACY) {
+    if (NO_NODE_JS || !isArray) {
+      isArray = function (obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+      };
+    }
+
+    if (NO_ARRAY_BUFFER_IS_VIEW || !isView) {
+      isView = function (obj) {
+        return typeof obj === 'object' && obj.buffer && obj.buffer.constructor === ArrayBuffer_;
+      };
+    }
+  }
+
+
   var blocks = [], buffer8;
-  if (ARRAY_BUFFER) {
-    var buffer = new ArrayBuffer(68);
+  if (!NO_ARRAY_BUFFER) {
+    var buffer = new ArrayBuffer_(68);
     buffer8 = new Uint8Array(buffer);
     blocks = new Uint32Array(buffer);
   }
 
-  var isArray = Array.isArray;
-  if (root.JS_MD5_NO_NODE_JS || !isArray) {
-    isArray = function (obj) {
-      return Object.prototype.toString.call(obj) === '[object Array]';
-    };
-  }
-
-  var isView = ArrayBuffer.isView;
-  if (ARRAY_BUFFER && (root.JS_MD5_NO_ARRAY_BUFFER_IS_VIEW || !isView)) {
-    isView = function (obj) {
-      return typeof obj === 'object' && obj.buffer && obj.buffer.constructor === ArrayBuffer;
-    };
-  }
 
   // [message: string, isString: bool]
   var formatMessage = function (message) {
@@ -63,13 +97,13 @@
     if (type !== 'object' || message === null) {
       throw new Error(INPUT_ERROR);
     }
-    if (ARRAY_BUFFER && message.constructor === ArrayBuffer) {
+    if (message.constructor === ArrayBuffer_) {
       return [new Uint8Array(message), false];
     }
-    if (!isArray(message) && !isView(message)) {
-      throw new Error(INPUT_ERROR);
+    if (isArray(message) || isView(message)) {
+      return [message, false];
     }
-    return [message, false];
+    throw new Error(INPUT_ERROR);
   }
 
   /**
@@ -129,11 +163,8 @@
    * @example
    * md5.base64('The quick brown fox jumps over the lazy dog');
    */
-  var createOutputMethod = function (outputType) {
-    return function (message) {
-      return new Md5(true).update(message)[outputType]();
-    };
-  };
+
+  0; // dummy code for jsDoc
 
   /**
    * @method create
@@ -155,164 +186,8 @@
    * var hash = md5.create();
    * hash.update('The quick brown fox jumps over the lazy dog');
    */
-  var createMethod = function () {
-    var method = createOutputMethod('hex');
-    if (NODE_JS) {
-      method = nodeWrap(method);
-    }
-    method.create = function () {
-      return new Md5();
-    };
-    method.update = function (message) {
-      return method.create().update(message);
-    };
-    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
-      var type = OUTPUT_TYPES[i];
-      method[type] = createOutputMethod(type);
-    }
-    return method;
-  };
 
-  var nodeWrap = function (method) {
-    var crypto = require('crypto')
-    var Buffer = require('buffer').Buffer;
-    var bufferFrom;
-    if (Buffer.from && !root.JS_MD5_NO_BUFFER_FROM) {
-      bufferFrom = Buffer.from;
-    } else {
-      bufferFrom = function (message) {
-        return new Buffer(message);
-      };
-    }
-    var nodeMethod = function (message) {
-      if (typeof message === 'string') {
-        return crypto.createHash('md5').update(message, 'utf8').digest('hex');
-      } else {
-        if (message === null || message === undefined) {
-          throw new Error(INPUT_ERROR);
-        } else if (message.constructor === ArrayBuffer) {
-          message = new Uint8Array(message);
-        }
-      }
-      if (isArray(message) || isView(message) ||
-        message.constructor === Buffer) {
-        return crypto.createHash('md5').update(bufferFrom(message)).digest('hex');
-      } else {
-        return method(message);
-      }
-    };
-    return nodeMethod;
-  };
-
-  /**
-   * @namespace md5.hmac
-   */
-  /**
-   * @method hex
-   * @memberof md5.hmac
-   * @description Output hash as hex string
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {String} Hex string
-   * @example
-   * md5.hmac.hex('key', 'The quick brown fox jumps over the lazy dog');
-   * // equal to
-   * md5.hmac('key', 'The quick brown fox jumps over the lazy dog');
-   */
-
-  /**
-   * @method digest
-   * @memberof md5.hmac
-   * @description Output hash as bytes array
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {Array} Bytes array
-   * @example
-   * md5.hmac.digest('key', 'The quick brown fox jumps over the lazy dog');
-   */
-  /**
-   * @method array
-   * @memberof md5.hmac
-   * @description Output hash as bytes array
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {Array} Bytes array
-   * @example
-   * md5.hmac.array('key', 'The quick brown fox jumps over the lazy dog');
-   */
-  /**
-   * @method arrayBuffer
-   * @memberof md5.hmac
-   * @description Output hash as ArrayBuffer
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {ArrayBuffer} ArrayBuffer
-   * @example
-   * md5.hmac.arrayBuffer('key', 'The quick brown fox jumps over the lazy dog');
-   */
-  /**
-   * @method buffer
-   * @deprecated This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
-   * @memberof md5.hmac
-   * @description Output hash as ArrayBuffer
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {ArrayBuffer} ArrayBuffer
-   * @example
-   * md5.hmac.buffer('key', 'The quick brown fox jumps over the lazy dog');
-   */
-  /**
-   * @method base64
-   * @memberof md5.hmac
-   * @description Output hash as base64 string
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {String} base64 string
-   * @example
-   * md5.hmac.base64('key', 'The quick brown fox jumps over the lazy dog');
-   */
-  var createHmacOutputMethod = function (outputType) {
-    return function (key, message) {
-      return new HmacMd5(key, true).update(message)[outputType]();
-    };
-  };
-
-  /**
-   * @method create
-   * @memberof md5.hmac
-   * @description Create HmacMd5 object
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @returns {HmacMd5} HmacMd5 object.
-   * @example
-   * var hash = md5.hmac.create('key');
-   */
-  /**
-   * @method update
-   * @memberof md5.hmac
-   * @description Create and update HmacMd5 object
-   * @param {String|Array|Uint8Array|ArrayBuffer} key key
-   * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-   * @returns {HmacMd5} HmacMd5 object.
-   * @example
-   * var hash = md5.hmac.update('key', 'The quick brown fox jumps over the lazy dog');
-   * // equal to
-   * var hash = md5.hmac.create('key');
-   * hash.update('The quick brown fox jumps over the lazy dog');
-   */
-  var createHmacMethod = function () {
-    var method = createHmacOutputMethod('hex');
-    method.create = function (key) {
-      return new HmacMd5(key);
-    };
-    method.update = function (key, message) {
-      return method.create(key).update(message);
-    };
-    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
-      var type = OUTPUT_TYPES[i];
-      method[type] = createHmacOutputMethod(type);
-    }
-    return method;
-  };
+  0; // dummy code for jsDoc
 
   /**
    * Md5 class
@@ -329,8 +204,8 @@
       this.blocks = blocks;
       this.buffer8 = buffer8;
     } else {
-      if (ARRAY_BUFFER) {
-        var buffer = new ArrayBuffer(68);
+      if (!NO_ARRAY_BUFFER) {
+        var buffer = new ArrayBuffer_(68);
         this.buffer8 = new Uint8Array(buffer);
         this.blocks = new Uint32Array(buffer);
       } else {
@@ -373,7 +248,7 @@
       }
 
       if (isString) {
-        if (ARRAY_BUFFER) {
+        if (!NO_ARRAY_BUFFER) {
           for (i = this.start; index < length && i < 64; ++index) {
             code = message.charCodeAt(index);
             if (code < 0x80) {
@@ -415,7 +290,7 @@
           }
         }
       } else {
-        if (ARRAY_BUFFER) {
+        if (!NO_ARRAY_BUFFER) {
           for (i = this.start; index < length && i < 64; ++index) {
             buffer8[i++] = message[index];
           }
@@ -776,81 +651,242 @@
     return base64Str;
   };
 
-  /**
-   * HmacMd5 class
-   * @class HmacMd5
-   * @extends Md5
-   * @description This is internal class.
-   * @see {@link md5.hmac.create}
-   */
-  function HmacMd5(key, sharedMemory) {
-    var i, result = formatMessage(key);
-    key = result[0];
-    if (result[1]) {
-      var bytes = [], length = key.length, index = 0, code;
-      for (i = 0; i < length; ++i) {
-        code = key.charCodeAt(i);
-        if (code < 0x80) {
-          bytes[index++] = code;
-        } else if (code < 0x800) {
-          bytes[index++] = (0xc0 | (code >>> 6));
-          bytes[index++] = (0x80 | (code & 0x3f));
-        } else if (code < 0xd800 || code >= 0xe000) {
-          bytes[index++] = (0xe0 | (code >>> 12));
-          bytes[index++] = (0x80 | ((code >>> 6) & 0x3f));
-          bytes[index++] = (0x80 | (code & 0x3f));
-        } else {
-          code = 0x10000 + (((code & 0x3ff) << 10) | (key.charCodeAt(++i) & 0x3ff));
-          bytes[index++] = (0xf0 | (code >>> 18));
-          bytes[index++] = (0x80 | ((code >>> 12) & 0x3f));
-          bytes[index++] = (0x80 | ((code >>> 6) & 0x3f));
-          bytes[index++] = (0x80 | (code & 0x3f));
-        }
-      }
-      key = bytes;
+  var nodeJsEnv = NODE_JS ? {
+    crypto: require('crypto'),
+    Buffer: require('buffer').Buffer,
+    bufferFrom: (Buffer.from && !NO_BUFFER_FROM) ? Buffer.from : function (message) {
+      return new Buffer(message);
     }
-
-    if (key.length > 64) {
-      key = (new Md5(true)).update(key).array();
-    }
-
-    var oKeyPad = [], iKeyPad = [];
-    for (i = 0; i < 64; ++i) {
-      var b = key[i] || 0;
-      oKeyPad[i] = 0x5c ^ b;
-      iKeyPad[i] = 0x36 ^ b;
-    }
-
-    Md5.call(this, sharedMemory);
-
-    this.update(iKeyPad);
-    this.oKeyPad = oKeyPad;
-    this.inner = true;
-    this.sharedMemory = sharedMemory;
-  }
-  HmacMd5.prototype = new Md5();
-
-  HmacMd5.prototype.finalize = function () {
-    Md5.prototype.finalize.call(this);
-    if (this.inner) {
-      this.inner = false;
-      var innerHash = this.array();
-      Md5.call(this, this.sharedMemory);
-      this.update(this.oKeyPad);
-      this.update(innerHash);
-      Md5.prototype.finalize.call(this);
-    }
+  } : {};
+  
+  var createOutputMethod = function (outputType) {
+    return function (message) {
+      return new Md5(true).update(message)[outputType]();
+    };
   };
+  var md5Base = createOutputMethod('hex');
+  NODE_JS && (function () { // require function wrapping for node-test
+    var md5BaseOriginal = md5Base;
+    var { crypto, Buffer, bufferFrom } = nodeJsEnv;
+    md5Base = function (message) {
+      if (message === null || message === undefined) {
+        throw new Error(INPUT_ERROR);
+      }
+      if (typeof message === 'string') {
+        return crypto.createHash('md5').update(message, 'utf8').digest('hex');
+      }
+      if (message.constructor === ArrayBuffer_) {
+        message = new Uint8Array(message);
+      }
+      if (isArray(message) || isView(message) || message.constructor === Buffer) {
+        return crypto.createHash('md5').update(bufferFrom(message)).digest('hex');
+      }
+      return md5BaseOriginal(message);
+    };
+  })();
 
-  var exports = createMethod();
+  md5Base.create = function () {
+    return new Md5();
+  };
+  md5Base.update = function (message) {
+    return md5Base.create().update(message);
+  };
+  for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
+    var type = OUTPUT_TYPES[i];
+    md5Base[type] = createOutputMethod(type);
+  }
+  
+  var exports = md5Base;
   exports.md5 = exports;
-  exports.md5.hmac = createHmacMethod();
+
+
+  if (!NO_HMAC) {
+
+    /**
+     * @namespace md5.hmac
+     */
+    /**
+     * @method hex
+     * @memberof md5.hmac
+     * @description Output hash as hex string
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {String} Hex string
+     * @example
+     * md5.hmac.hex('key', 'The quick brown fox jumps over the lazy dog');
+     * // equal to
+     * md5.hmac('key', 'The quick brown fox jumps over the lazy dog');
+     */
+
+    /**
+     * @method digest
+     * @memberof md5.hmac
+     * @description Output hash as bytes array
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {Array} Bytes array
+     * @example
+     * md5.hmac.digest('key', 'The quick brown fox jumps over the lazy dog');
+     */
+    /**
+     * @method array
+     * @memberof md5.hmac
+     * @description Output hash as bytes array
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {Array} Bytes array
+     * @example
+     * md5.hmac.array('key', 'The quick brown fox jumps over the lazy dog');
+     */
+    /**
+     * @method arrayBuffer
+     * @memberof md5.hmac
+     * @description Output hash as ArrayBuffer
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {ArrayBuffer} ArrayBuffer
+     * @example
+     * md5.hmac.arrayBuffer('key', 'The quick brown fox jumps over the lazy dog');
+     */
+    /**
+     * @method buffer
+     * @deprecated This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
+     * @memberof md5.hmac
+     * @description Output hash as ArrayBuffer
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {ArrayBuffer} ArrayBuffer
+     * @example
+     * md5.hmac.buffer('key', 'The quick brown fox jumps over the lazy dog');
+     */
+    /**
+     * @method base64
+     * @memberof md5.hmac
+     * @description Output hash as base64 string
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {String} base64 string
+     * @example
+     * md5.hmac.base64('key', 'The quick brown fox jumps over the lazy dog');
+     */
+    0; // dummy code for jsDoc
+
+    var createHmacOutputMethod = function (outputType) {
+      return function (key, message) {
+        return new HmacMd5(key, true).update(message)[outputType]();
+      };
+    };
+
+    /**
+     * @method create
+     * @memberof md5.hmac
+     * @description Create HmacMd5 object
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @returns {HmacMd5} HmacMd5 object.
+     * @example
+     * var hash = md5.hmac.create('key');
+     */
+    /**
+     * @method update
+     * @memberof md5.hmac
+     * @description Create and update HmacMd5 object
+     * @param {String|Array|Uint8Array|ArrayBuffer} key key
+     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
+     * @returns {HmacMd5} HmacMd5 object.
+     * @example
+     * var hash = md5.hmac.update('key', 'The quick brown fox jumps over the lazy dog');
+     * // equal to
+     * var hash = md5.hmac.create('key');
+     * hash.update('The quick brown fox jumps over the lazy dog');
+     */
+
+
+    /**
+     * HmacMd5 class
+     * @class HmacMd5
+     * @extends Md5
+     * @description This is internal class.
+     * @see {@link md5.hmac.create}
+     */
+    function HmacMd5(key, sharedMemory) {
+      var i, result = formatMessage(key);
+      key = result[0];
+      if (result[1]) {
+        var bytes = [], length = key.length, index = 0, code;
+        for (i = 0; i < length; ++i) {
+          code = key.charCodeAt(i);
+          if (code < 0x80) {
+            bytes[index++] = code;
+          } else if (code < 0x800) {
+            bytes[index++] = (0xc0 | (code >>> 6));
+            bytes[index++] = (0x80 | (code & 0x3f));
+          } else if (code < 0xd800 || code >= 0xe000) {
+            bytes[index++] = (0xe0 | (code >>> 12));
+            bytes[index++] = (0x80 | ((code >>> 6) & 0x3f));
+            bytes[index++] = (0x80 | (code & 0x3f));
+          } else {
+            code = 0x10000 + (((code & 0x3ff) << 10) | (key.charCodeAt(++i) & 0x3ff));
+            bytes[index++] = (0xf0 | (code >>> 18));
+            bytes[index++] = (0x80 | ((code >>> 12) & 0x3f));
+            bytes[index++] = (0x80 | ((code >>> 6) & 0x3f));
+            bytes[index++] = (0x80 | (code & 0x3f));
+          }
+        }
+        key = bytes;
+      }
+
+      if (key.length > 64) {
+        key = (new Md5(true)).update(key).array();
+      }
+
+      var oKeyPad = [], iKeyPad = [];
+      for (i = 0; i < 64; ++i) {
+        var b = key[i] || 0;
+        oKeyPad[i] = 0x5c ^ b;
+        iKeyPad[i] = 0x36 ^ b;
+      }
+
+      Md5.call(this, sharedMemory);
+
+      this.update(iKeyPad);
+      this.oKeyPad = oKeyPad;
+      this.inner = true;
+      this.sharedMemory = sharedMemory;
+    }
+    HmacMd5.prototype = new Md5();
+
+    HmacMd5.prototype.finalize = function () {
+      Md5.prototype.finalize.call(this);
+      if (this.inner) {
+        this.inner = false;
+        var innerHash = this.array();
+        Md5.call(this, this.sharedMemory);
+        this.update(this.oKeyPad);
+        this.update(innerHash);
+        Md5.prototype.finalize.call(this);
+      }
+    };
+
+    var hmacBase = createHmacOutputMethod('hex');
+    hmacBase.create = function (key) {
+      return new HmacMd5(key);
+    };
+    hmacBase.update = function (key, message) {
+      return hmacBase.create(key).update(message);
+    };
+    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
+      var type = OUTPUT_TYPES[i];
+      hmacBase[type] = createHmacOutputMethod(type);
+    }
+    exports.md5.hmac = hmacBase;
+
+  }
 
   if (COMMON_JS) {
     module.exports = exports;
   } else {
     /**
-     * @method md5
+     * @method md5
      * @description Md5 hash function, export to global in browsers.
      * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
      * @returns {String} md5 hashes
