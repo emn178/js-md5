@@ -10,15 +10,19 @@
     "nyc": "^15.1.0",
     "requirejs": "^2.1.22",
     "tiny-worker": "^2.3.0",
-    "uglify-js": "^3.1.9"
+    "uglify-js": "^3.17.4"
   },
   "scripts": {
     "test": "nyc mocha tests/node-test.js",
     "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "doc": "rm -rf doc;jsdoc src README.md -d doc",
-    "compress": "uglifyjs src/md5.js -c -m eval --comments --output build/md5.min.js",
-    "build": "npm run-script compress;npm run-script doc"
+    "compress": "uglifyjs src/config/full.config.js src/md5.js -c passes=3 --toplevel -m eval --comments --output build/md5.min.js",
+    "compress-lite": "uglifyjs src/config/lite.config.js src/md5.js --compress passes=3,unused,dead_code,join_vars --toplevel -m eval --comments --output build/md5-lite.min.js",
+    "dist-src": "uglifyjs src/config/full.config.js src/md5.js -c passes=3,objects=false,negate_iife=false,merge_vars=false,loops=false,join_vars=false,inline=false,imports=false,if_return=false,functions=false,dead_code=true,default_values=false,collapse_vars=false,comparisons=false,awaits=false,booleans=false,assignments=false,arrows=false,arguments=false,annotations=false,properties=false,reduce_funcs=false,rests=false,sequences=true,side_effects=true,spreads=false,strings=false,switches=false,templates=false,yields=false --beautify --toplevel --comments --output build/md5.js",
+    "dist-lite": "uglifyjs src/config/lite.config.js src/md5.js -c passes=3,objects=false,negate_iife=false,merge_vars=false,loops=false,join_vars=false,inline=false,imports=false,if_return=false,functions=false,dead_code=true,default_values=false,collapse_vars=false,comparisons=false,awaits=false,booleans=false,assignments=false,arrows=false,arguments=false,annotations=false,properties=false,reduce_funcs=false,rests=false,sequences=true,side_effects=true,spreads=false,strings=false,switches=false,templates=false,yields=false --beautify --toplevel --comments --output build/md5-lite.js",
+    "build": "npm run-script compress;npm run-script compress-lite;npm run dist-src;npm run dist-lite;npm run-script doc",
+    "build-bun": "bun run compress;bun run compress-lite;bun run dist-src;bun run dist-lite;bun run doc"
   },
   "repository": {
     "type": "git",
@@ -38,12 +42,20 @@
     "url": "https://github.com/emn178/js-md5/issues"
   },
   "nyc": {
+    "extension": [
+      ".js"
+    ],
     "exclude": [
-      "tests"
-    ]
+      "tests",
+      "src/config/*.js"
+    ],
+    "require": ["mocha", "expect.js"]
   },
   "browser": {
     "crypto": false,
     "buffer": false
+  },
+  "dependencies": {
+    "coveralls": "^3.1.1"
   }
 }

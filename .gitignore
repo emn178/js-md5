@@ -2,3 +2,6 @@
 /covreporter/
 /.nyc_output/
 /coverage/
+**/.DS_Store
+**/Thumbs.db
+bun.lockb

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD5 Function Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.2.0/mocha.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.2.0/mocha.min.js"></script>
+    <script src="../src/md5.js"></script>
+    <script>
+        mocha.setup('bdd');
+
+        describe('MD5 Test Cases', function() {
+            const testCases = [
+                { input: "Hello", expected: "8b1a9953c4611296a827abf8c47804d7" },
+                { input: "12345", expected: "827ccb0eea8a706c4c34a16891f84e7b" },
+                { input: "@#$$%^&*", expected: "6cf399a04a4466afedc1ca8bfed1c73b" },
+                { input: "你好", expected: "7eca689f0d3389d9dea66ae112e5cfd7" },
+                { input: "안녕하세요", expected: "209bebae3eb7363d9b080a66f9e306ef" },
+                { input: "こんにちは", expected: "c0e89a293bd36c7a768e4e9d2c5475a8" },
+                { input: "Bonjour", expected: "ebc58ab2cb4848d04ec23d83f7ddf985" },
+                { input: "مرحبا", expected: "9530db02d3c8217be00c1aa98ec51861" },
+                { input: "Halo", expected: "aa6df57fb6fe377d80b4a257b4a92cba" },
+                { input: "Xin chào", expected: "d507cf86fa25f6787e3fc5e5d61e00a3" },
+                // More test cases...
+            ];
+
+            testCases.forEach(function(testCase) {
+                it(`Correct MD5 Hash for "${testCase.input}"`, function(done) {
+                    const result = md5(testCase.input);
+                    if (result === testCase.expected) {
+                        done();
+                    } else {
+                        done(new Error(`Test failed for input "${testCase.input}". Expected: ${testCase.expected}, Got: ${result}`));
+                    }
+                });
+            });
+        });
+
+        window.onload = function() {
+            mocha.run();
+        };
+    </script>
+</head>
+<body>
+    <div id="mocha"></div>
+</body>
+</html>

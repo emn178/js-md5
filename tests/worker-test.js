@@ -5,6 +5,7 @@
     'e4d909c290d0fb1ca068ffaddf22cbd0': 'The quick brown fox jumps over the lazy dog.'
   };
 
+  console.log(typeof WorkerGlobalScope)
   describe('#md5', function () {
     Object.keys(cases).forEach(function (hash) {
       it('should be equal', function (done) {
