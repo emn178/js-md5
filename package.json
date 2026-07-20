@@ -46,12 +46,11 @@
     "tiny-worker": "^2.3.0"
   },
   "scripts": {
-    "test": "npm run compress && nyc mocha tests/node-test.js && node tests/build-test.js && node tests/esm-test.mjs",
+    "test": "nyc mocha tests/node-test.js && node tests/build-test.js && node tests/esm-test.mjs",
     "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "doc": "rm -rf doc;jsdoc src README.md -d doc",
-    "compress": "rollup -c",
-    "build": "npm run-script compress;npm run-script doc"
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov",
+    "doc": "rm -rf doc && jsdoc -c jsdoc.json src README.md -d doc",
+    "build": "rollup -c && npm run doc"
   },
   "repository": {
     "type": "git",

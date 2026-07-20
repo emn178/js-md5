@@ -2,3 +2,4 @@
 /covreporter/
 /.nyc_output/
 /coverage/
+coverage.lcov
