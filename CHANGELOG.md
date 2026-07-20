@@ -2,7 +2,7 @@
 
 ## v0.9.0 / 2026-07-20
 ### Added
-- Modern and lite builds generated from the same source.
+- Modern and lite builds generated from the same source. #44
 - support ESM.
 - Set up GitHub release action / provenance
 
