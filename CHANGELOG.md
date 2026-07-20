@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.9.2 / 2026-07-20
+### Fixed
+- CI test.
+
 ## v0.9.1 / 2026-07-20
 ### Changed
 - web worker detection. #44
