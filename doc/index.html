@@ -44,16 +44,82 @@
 
     <section>
         <article><h1>js-md5</h1>
-<p><a href="https://travis-ci.org/emn178/js-md5"><img src="https://travis-ci.org/emn178/js-md5.svg?branch=master" alt="Build Status"></a>
+<p><a href="https://github.com/emn178/js-md5/actions/workflows/ci.yml"><img src="https://github.com/emn178/js-md5/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 <a href="https://coveralls.io/r/emn178/js-md5?branch=master"><img src="https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master" alt="Coverage Status"></a><br>
 <a href="https://nodei.co/npm/js-md5/"><img src="https://nodei.co/npm/js-md5.png?stars&amp;downloads" alt="NPM"></a></p>
-<p>A simple MD5 hash function for JavaScript supports UTF-8 encoding.</p>
+<p>A simple and fast MD5 hash function for JavaScript supports UTF-8 encoding.</p>
 <h2>Demo</h2>
 <p><a href="http://emn178.github.io/online-tools/md5.html">MD5 Online</a><br>
 <a href="http://emn178.github.io/online-tools/md5_checksum.html">MD5 File Checksum Online</a></p>
 <h2>Download</h2>
-<p><a href="https://raw.github.com/emn178/js-md5/master/build/md5.min.js">Compress</a><br>
-<a href="https://raw.github.com/emn178/js-md5/master/src/md5.js">Uncompress</a></p>
+<ul>
+<li><a href="https://raw.github.com/emn178/js-md5/master/build/md5.min.js">Compress</a></li>
+<li><a href="https://raw.github.com/emn178/js-md5/master/build/md5.js">Uncompressed build</a></li>
+<li><a href="https://raw.github.com/emn178/js-md5/master/build/md5.modern.min.js">Modern</a></li>
+<li><a href="https://raw.github.com/emn178/js-md5/master/build/md5.modern.js">Modern uncompressed</a></li>
+<li><a href="https://raw.github.com/emn178/js-md5/master/build/md5-lite.min.js">Lite</a></li>
+<li><a href="https://raw.github.com/emn178/js-md5/master/build/md5-lite.js">Lite uncompressed</a></li>
+<li><a href="https://raw.github.com/emn178/js-md5/master/src/md5.js">Uncompress</a></li>
+</ul>
+<h3>Builds</h3>
+<table>
+<thead>
+<tr>
+<th>Build</th>
+<th>Legacy fallbacks</th>
+<th>Node acceleration</th>
+<th>HMAC</th>
+<th>Base64</th>
+<th>Deprecated <code>buffer</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>md5.js</code> / <code>md5.min.js</code></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>md5.modern.js</code> / <code>md5.modern.min.js</code></td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>md5-lite.js</code> / <code>md5-lite.min.js</code></td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>The modern and lite builds require <code>Array.isArray</code>, <code>ArrayBuffer</code>, typed arrays,
+and <code>ArrayBuffer.isView</code>. The lite build keeps the one-shot and streaming MD5
+APIs, including <code>hex</code>, <code>array</code>, <code>digest</code>, and <code>arrayBuffer</code> output.</p>
+<h2>Benchmark</h2>
+<ul>
+<li><a href="https://measurethat.net/Benchmarks/Show/29171/0/md5-performance-comparison-v2">Benchmark (measurethat.net) - Short String</a></li>
+<li><a href="https://measurethat.net/Benchmarks/Show/29172/0/md5-performance-comparison-long-text-v2">Benchmark (measurethat.net) - Long String</a></li>
+<li><a href="https://jsperf.app/jonuhi/6">Benchmark (jsperf.app) - Long String</a></li>
+<li><a href="https://measurethat.net/Benchmarks/Show/29173/0/md5-performance-comparison-very-long-text">Benchmark (measurethat.net) - Very Long String</a></li>
+<li><a href="https://jsperf.app/jonuhi/8">Benchmark (jsperf.app) - Very Long String</a></li>
+<li><a href="https://measurethat.net/Benchmarks/Show/29176/0/md5-performance-comparison-very-long-text-v6">Async Benchmark (measurethat.net)</a></li>
+<li><a href="https://jsperf.app/jonuhi/9">Async Benchmark (jsperf.app)</a></li>
+</ul>
+<ul>
+<li>js-md5 is the fastest synchronous MD5 library, but slower than Hash-WASM</li>
+</ul>
+<ul>
+<li><a href="https://github.com/emn178/js-md5/issues/19">File Benchmark - Issue #19</a></li>
+<li><a href="https://github.com/emn178/js-md5/issues/42">File Benchmark - Issue #42</a></li>
+</ul>
 <h2>Installation</h2>
 <p>You can also install js-md5 by using Bower.</p>
 <pre><code>bower install md5
@@ -81,6 +147,10 @@ hash.hex();
 <p>If you use node.js, you should require the module first:</p>
 <pre class="prettyprint source lang-JavaScript"><code>var md5 = require('js-md5');
 </code></pre>
+<h3>TypeScript</h3>
+<p>If you use TypeScript, you can import like this:</p>
+<pre class="prettyprint source lang-TypeScript"><code>import { md5 } from 'js-md5';
+</code></pre>
 <h2>RequireJS</h2>
 <p>It supports AMD:</p>
 <pre class="prettyprint source lang-JavaScript"><code>require(['your/path/md5.js'], function(md5) {
@@ -106,7 +176,6 @@ md5.hex(''); // d41d8cd98f00b204e9800998ecf8427e
 md5.array(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 248, 66, 126]
 md5.digest(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 248, 66, 126]
 md5.arrayBuffer(''); // ArrayBuffer
-md5.buffer(''); // ArrayBuffer, deprecated, This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
 md5.base64(''); // 1B2M2Y8AsgTpgAmY7PhCfg==
 
 // HMAC
@@ -135,7 +204,7 @@ Author: Chen, Yi-Cyuan (emn178@gmail.com)</p></article>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed Sep 27 2023 21:32:04 GMT+0800 (台北標準時間)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Jul 20 2026 10:19:21 GMT+0800 (Taipei Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

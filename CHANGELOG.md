@@ -1,5 +1,15 @@
 # Change Log
 
+## v0.9.0 / 2026-07-20
+### Added
+- Modern and lite builds generated from the same source.
+- support ESM.
+- Set up GitHub release action / provenance
+
+### Fixed
+- Fix uploading coverage to coveralls
+- fix recognize environment is node when use browserfs
+
 ## v0.8.3 / 2023-10-09
 ### Fixed
 - package.json main property.

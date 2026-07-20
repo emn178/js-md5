@@ -1,5 +1,5 @@
 # js-md5
-[![Build Status](https://travis-ci.org/emn178/js-md5.svg?branch=master)](https://travis-ci.org/emn178/js-md5)
+[![CI](https://github.com/emn178/js-md5/actions/workflows/ci.yml/badge.svg)](https://github.com/emn178/js-md5/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)  
 [![NPM](https://nodei.co/npm/js-md5.png?stars&downloads)](https://nodei.co/npm/js-md5/)
 
@@ -10,8 +10,25 @@ A simple and fast MD5 hash function for JavaScript supports UTF-8 encoding.
 [MD5 File Checksum Online](http://emn178.github.io/online-tools/md5_checksum.html)
 
 ## Download
-[Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)  
-[Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
+- [Compress](https://raw.github.com/emn178/js-md5/master/build/md5.min.js)
+- [Uncompressed build](https://raw.github.com/emn178/js-md5/master/build/md5.js)
+- [Modern](https://raw.github.com/emn178/js-md5/master/build/md5.modern.min.js)
+- [Modern uncompressed](https://raw.github.com/emn178/js-md5/master/build/md5.modern.js)
+- [Lite](https://raw.github.com/emn178/js-md5/master/build/md5-lite.min.js)
+- [Lite uncompressed](https://raw.github.com/emn178/js-md5/master/build/md5-lite.js)
+- [Uncompress](https://raw.github.com/emn178/js-md5/master/src/md5.js)
+
+### Builds
+
+| Build | Legacy fallbacks | Node acceleration | HMAC | Base64 | Deprecated `buffer` |
+| --- | --- | --- | --- | --- | --- |
+| `md5.js` / `md5.min.js` | Yes | Yes | Yes | Yes | Yes |
+| `md5.modern.js` / `md5.modern.min.js` | No | Yes | Yes | Yes | Yes |
+| `md5-lite.js` / `md5-lite.min.js` | No | No | No | No | No |
+
+The modern and lite builds require `Array.isArray`, `ArrayBuffer`, typed arrays,
+and `ArrayBuffer.isView`. The lite build keeps the one-shot and streaming MD5
+APIs, including `hex`, `array`, `digest`, and `arrayBuffer` output.
 
 ## Benchmark
 - [Benchmark (measurethat.net) - Short String](https://measurethat.net/Benchmarks/Show/29171/0/md5-performance-comparison-v2)
@@ -95,7 +112,6 @@ md5.hex(''); // d41d8cd98f00b204e9800998ecf8427e
 md5.array(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 248, 66, 126]
 md5.digest(''); // [212, 29, 140, 217, 143, 0, 178, 4, 233, 128, 9, 152, 236, 248, 66, 126]
 md5.arrayBuffer(''); // ArrayBuffer
-md5.buffer(''); // ArrayBuffer, deprecated, This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
 md5.base64(''); // 1B2M2Y8AsgTpgAmY7PhCfg==
 
 // HMAC

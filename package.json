@@ -1,23 +1,56 @@
 {
   "name": "js-md5",
-  "version": "0.8.3",
+  "version": "0.9.0",
   "description": "A simple MD5 hash function for JavaScript supports UTF-8 encoding.",
   "main": "src/md5.js",
+  "module": "build/md5.mjs",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "node": {
+        "import": "./build/md5.node.mjs",
+        "require": "./src/md5.js"
+      },
+      "import": "./build/md5.mjs",
+      "require": "./src/md5.js",
+      "default": "./src/md5.js"
+    },
+    "./src/md5.js": "./src/md5.js",
+    "./build/md5.js": "./build/md5.js",
+    "./build/md5.min.js": "./build/md5.min.js",
+    "./build/md5.mjs": "./build/md5.mjs",
+    "./build/md5.min.mjs": "./build/md5.min.mjs",
+    "./build/md5.node.mjs": "./build/md5.node.mjs",
+    "./build/md5.modern.js": "./build/md5.modern.js",
+    "./build/md5.modern.min.js": "./build/md5.modern.min.js",
+    "./build/md5.modern.mjs": "./build/md5.modern.mjs",
+    "./build/md5.modern.min.mjs": "./build/md5.modern.min.mjs",
+    "./build/md5.modern.node.mjs": "./build/md5.modern.node.mjs",
+    "./build/md5-lite.js": "./build/md5-lite.js",
+    "./build/md5-lite.min.js": "./build/md5-lite.min.js",
+    "./build/md5-lite.mjs": "./build/md5-lite.mjs",
+    "./build/md5-lite.min.mjs": "./build/md5-lite.min.mjs",
+    "./build/md5-lite.node.mjs": "./build/md5-lite.node.mjs",
+    "./package.json": "./package.json"
+  },
+  "types": "./index.d.ts",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.5",
+    "@rollup/plugin-terser": "^1.0.0",
     "expect.js": "~0.3.1",
     "jsdoc": "~4.0.2",
     "mocha": "~10.2.0",
     "nyc": "^15.1.0",
     "requirejs": "^2.1.22",
-    "tiny-worker": "^2.3.0",
-    "uglify-js": "^3.1.9"
+    "rollup": "^4.43.0",
+    "tiny-worker": "^2.3.0"
   },
   "scripts": {
-    "test": "nyc mocha tests/node-test.js",
+    "test": "npm run compress && nyc mocha tests/node-test.js && node tests/build-test.js && node tests/esm-test.mjs",
     "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "doc": "rm -rf doc;jsdoc src README.md -d doc",
-    "compress": "uglifyjs src/md5.js -c -m eval --comments --output build/md5.min.js",
+    "compress": "rollup -c",
     "build": "npm run-script compress;npm run-script doc"
   },
   "repository": {
