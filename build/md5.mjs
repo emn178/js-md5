@@ -24,7 +24,7 @@ var md5$1 = {exports: {}};
 	  if (root.JS_MD5_NO_WINDOW) {
 	    WINDOW = false;
 	  }
-	  var WEB_WORKER = !WINDOW && typeof self === 'object';
+	  var WEB_WORKER = typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' && self instanceof WorkerGlobalScope;
 	  if (WEB_WORKER) {
 	    root = self;
 	  }

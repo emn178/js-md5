@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.9.1 / 2026-07-20
+### Changed
+- web worker detection. #44
+
 ## v0.9.0 / 2026-07-20
 ### Added
 - Modern and lite builds generated from the same source. #44

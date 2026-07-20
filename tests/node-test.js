@@ -103,12 +103,13 @@ require('./worker-test.js');
 delete require.cache[require.resolve('./worker-test.js')];
 
 // cover webworker
+WorkerGlobalScope = function () { }
 JS_MD5_NO_WINDOW = true;
 JS_MD5_NO_NODE_JS = true;
 WORKER = './worker.js';
 SOURCE = '../src/md5.js';
 window = global;
-self = global;
+self = new WorkerGlobalScope();
 
 Worker = function (file) {
   require(file);

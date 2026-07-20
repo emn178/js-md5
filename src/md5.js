@@ -22,7 +22,7 @@
   if (root.JS_MD5_NO_WINDOW) {
     WINDOW = false;
   }
-  var WEB_WORKER = !WINDOW && typeof self === 'object';
+  var WEB_WORKER = typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' && self instanceof WorkerGlobalScope;
   /* istanbul ignore next */
   var NODE_JS = !root.JS_MD5_NO_NODE_JS && !WINDOW && typeof process === 'object' && process.versions && process.versions.node;
   if (NODE_JS) {
