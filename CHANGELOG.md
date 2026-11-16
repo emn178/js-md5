@@ -4,6 +4,10 @@
 ### Fixed
 - Unpaired UTF-16 surrogates produce wrong digests and consume the next code unit in the JS path. Unpaired surrogates are now encoded as U+FFFD, matching `TextEncoder` and Node.js `crypto`. #57
 
+### Changed
+- Update transitive dev dependencies to fix security advisories (brace-expansion, browserslist, diff, glob, js-yaml, markdown-it, minimatch, serialize-javascript)
+- Drop Node.js 16 from CI
+
 ## v0.9.2 / 2026-07-20
 ### Fixed
 - CI test.
