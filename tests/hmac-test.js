@@ -45,6 +45,10 @@
         '05fe3b294344f4e93c811e10f9825a38': ['中文', '中文'],
         'c1bc6df91f38e6332b8562324005103d': ['aécio', 'aécio'],
         '14eef78533c35078177d11fb4593a19e': ['𠜎', '𠜎']
+      },
+      'UTF8 unpaired surrogates': {
+        '2ef4c67742d4f436cbdfdbad133659af': ['\ud800', 'a\ud83db'],
+        'f537b6e97a3e8b23a9e87a29fb5c4173': ['a\udc00b', '\ud83d\ude00\udfff']
       }
     }
   };

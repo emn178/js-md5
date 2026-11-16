@@ -13,7 +13,7 @@ var md5$1 = {exports: {}};
  * [js-md5]{@link https://github.com/emn178/js-md5}
  *
  * @namespace md5
- * @version 0.9.2
+ * @version 0.10.0
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2014-2026
  * @license MIT
@@ -239,7 +239,7 @@ var md5$1 = {exports: {}};
 	    var result = formatMessage(message);
 	    message = result[0];
 	    var isString = result[1];
-	    var code, index = 0, i, length = message.length, blocks = this.blocks;
+	    var code, code2, index = 0, i, length = message.length, blocks = this.blocks;
 	    var buffer8 = this.buffer8;
 
 	    while (index < length) {
@@ -265,12 +265,18 @@ var md5$1 = {exports: {}};
 	              buffer8[i++] = 0xe0 | (code >>> 12);
 	              buffer8[i++] = 0x80 | ((code >>> 6) & 0x3f);
 	              buffer8[i++] = 0x80 | (code & 0x3f);
-	            } else {
-	              code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
+	            } else if (code < 0xdc00 && (code2 = message.charCodeAt(index + 1)) >= 0xdc00 && code2 < 0xe000) {
+	              ++index;
+	              code = 0x10000 + (((code & 0x3ff) << 10) | (code2 & 0x3ff));
 	              buffer8[i++] = 0xf0 | (code >>> 18);
 	              buffer8[i++] = 0x80 | ((code >>> 12) & 0x3f);
 	              buffer8[i++] = 0x80 | ((code >>> 6) & 0x3f);
 	              buffer8[i++] = 0x80 | (code & 0x3f);
+	            } else {
+	              // unpaired surrogate: U+FFFD
+	              buffer8[i++] = 0xef;
+	              buffer8[i++] = 0xbf;
+	              buffer8[i++] = 0xbd;
 	            }
 	          }
 	        }
