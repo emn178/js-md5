@@ -1,7 +1,8 @@
 # js-md5
 [![CI](https://github.com/emn178/js-md5/actions/workflows/ci.yml/badge.svg)](https://github.com/emn178/js-md5/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)  
-[![NPM](https://nodei.co/npm/js-md5.png?stars&downloads)](https://nodei.co/npm/js-md5/)
+[![Coverage Status](https://coveralls.io/repos/emn178/js-md5/badge.svg?branch=master)](https://coveralls.io/r/emn178/js-md5?branch=master)
+[![NPM](https://img.shields.io/npm/v/js-md5)](https://www.npmjs.com/package/js-md5)
+[![CDNJS](https://img.shields.io/jsdelivr/npm/hm/js-md5)](https://www.jsdelivr.com/package/npm/js-md5)
 
 A simple and fast MD5 hash function for JavaScript supports UTF-8 encoding.
 
