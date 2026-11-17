@@ -40,7 +40,7 @@ APIs, including `hex`, `array`, `digest`, and `arrayBuffer` output.
 - [Async Benchmark (measurethat.net)](https://measurethat.net/Benchmarks/Show/29176/0/md5-performance-comparison-very-long-text-v6)
 - [Async Benchmark (jsperf.app)](https://jsperf.app/jonuhi/9)
 
-* js-md5 is the fastest synchronous MD5 library, but slower than Hash-WASM 
+* js-md5 is the fastest for short strings in these benchmarks. For large data, WebAssembly-based libraries (e.g. Hash-WASM) are faster.
 
 - [File Benchmark - Issue #19](https://github.com/emn178/js-md5/issues/19)
 - [File Benchmark - Issue #42](https://github.com/emn178/js-md5/issues/42)
