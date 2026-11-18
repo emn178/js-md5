@@ -1,5 +1,13 @@
 # Change Log
 
+## v0.11.0 / 2026-11-18
+### Fixed
+- Incorrect hash for `DataView` input.
+- Throws `ArrayBuffer is not defined` in browsers without `ArrayBuffer`.
+
+### Changed
+- Multi-byte typed arrays such as `Uint16Array`, `Uint32Array` and `Float32Array` are now hashed by their underlying bytes, the same as Node.js `crypto` and Web Crypto. Previously each element was treated as one byte.
+
 ## v0.10.0 / 2026-11-16
 ### Fixed
 - Unpaired UTF-16 surrogates produce wrong digests and consume the next code unit in the JS path. Unpaired surrogates are now encoded as U+FFFD, matching `TextEncoder` and Node.js `crypto`. #57

@@ -2,7 +2,7 @@
  * [js-md5]{@link https://github.com/emn178/js-md5}
  *
  * @namespace md5
- * @version 0.10.0
+ * @version 0.11.0
  * @author Chen, Yi-Cyuan [emn178@gmail.com]
  * @copyright Chen, Yi-Cyuan 2014-2026
  * @license MIT
@@ -49,7 +49,7 @@
 
   var isArray = Array.isArray;
 
-  var isView = ArrayBuffer.isView;
+  var isView = ArrayBuffer.isView ;
 
   // [message: string, isString: bool]
   var formatMessage = function (message) {
@@ -63,10 +63,14 @@
     if (message.constructor === ArrayBuffer) {
       return [new Uint8Array(message), false];
     }
-    if (!isArray(message) && !isView(message)) {
+    if (isArray(message)) {
+      return [message, false];
+    }
+    if (!isView(message)) {
       throw new Error(INPUT_ERROR);
     }
-    return [message, false];
+    // read the underlying bytes of any view (DataView, Uint16Array, ...)
+    return [new Uint8Array(message.buffer, message.byteOffset, message.byteLength), false];
   };
 
   /**
@@ -182,6 +186,8 @@
           throw new Error(INPUT_ERROR);
         } else if (message.constructor === ArrayBuffer) {
           message = new Uint8Array(message);
+        } else if (isView(message) && message.constructor !== Buffer) {
+          message = new Uint8Array(message.buffer, message.byteOffset, message.byteLength);
         }
       }
       if (isArray(message) || isView(message) ||

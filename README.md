@@ -103,7 +103,7 @@ md5('The quick brown fox jumps over the lazy dog.'); // e4d909c290d0fb1ca068ffad
 // It also supports UTF-8 encoding
 md5('中文'); // a7bac2239fcdcb3a067903d8077c4a07
 
-// It also supports byte `Array`, `Uint8Array`, `ArrayBuffer`
+// It also supports byte `Array`, `Uint8Array`, `ArrayBuffer` and other `ArrayBuffer` views (their underlying bytes are hashed)
 md5([]); // d41d8cd98f00b204e9800998ecf8427e
 md5(new Uint8Array([])); // d41d8cd98f00b204e9800998ecf8427e
 

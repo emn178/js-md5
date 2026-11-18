@@ -99,6 +99,11 @@
     testCases['Int8Array'] = {
       '9e107d9d372bb6826bd81d3542a419d6': new Int8Array([84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103])
     };
+    testCases['ArrayBuffer view'] = {
+      '71f3ccb98530e3072e2eaef01da20d8c': new Int8Array([-1, -128, 65, 0, -2]),
+      '050d144172d916d0846f839e0412e929': new Uint16Array(new Uint8Array([2, 1]).buffer),
+      'eb61eead90e3b899c6bcbe27ac581660': new DataView(new Uint8Array([9, 72, 69, 76, 76, 79, 9]).buffer, 1, 5)
+    };
     testCases['ArrayBuffer'] = {
       '93b885adfe0da089cdf634904fd59f71': new ArrayBuffer(1)
     };

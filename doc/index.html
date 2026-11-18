@@ -115,7 +115,7 @@ APIs, including <code>hex</code>, <code>array</code>, <code>digest</code>, and <
 <li><a href="https://jsperf.app/jonuhi/9">Async Benchmark (jsperf.app)</a></li>
 </ul>
 <ul>
-<li>js-md5 is the fastest synchronous MD5 library, but slower than Hash-WASM</li>
+<li>js-md5 is the fastest for short strings in these benchmarks. For large data, WebAssembly-based libraries (e.g. Hash-WASM) are faster.</li>
 </ul>
 <ul>
 <li><a href="https://github.com/emn178/js-md5/issues/19">File Benchmark - Issue #19</a></li>
@@ -167,7 +167,7 @@ md5('The quick brown fox jumps over the lazy dog.'); // e4d909c290d0fb1ca068ffad
 // It also supports UTF-8 encoding
 md5('中文'); // a7bac2239fcdcb3a067903d8077c4a07
 
-// It also supports byte `Array`, `Uint8Array`, `ArrayBuffer`
+// It also supports byte `Array`, `Uint8Array`, `ArrayBuffer` and other `ArrayBuffer` views (their underlying bytes are hashed)
 md5([]); // d41d8cd98f00b204e9800998ecf8427e
 md5(new Uint8Array([])); // d41d8cd98f00b204e9800998ecf8427e
 

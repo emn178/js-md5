@@ -57,4 +57,14 @@ expect(browserLite.base64).to.be(undefined);
 expect(browserLite.buffer).to.be(undefined);
 expect(browserLite.hmac).to.be(undefined);
 
+// legacy builds load in browsers without ArrayBuffer
+['build/md5.js', 'build/md5.min.js'].forEach(function (file) {
+  var context = vm.createContext({});
+  vm.runInContext('var window = this; delete ArrayBuffer; delete Uint8Array; delete Uint32Array; delete DataView;', context);
+  vm.runInContext(fs.readFileSync(file, 'utf8'), context);
+  expect(context.md5('abc')).to.be(EXPECTED_MD5);
+  expect(context.md5.create().update('a').update([98, 99]).hex()).to.be(EXPECTED_MD5);
+  expect(context.md5.hmac('key', 'abc')).to.be(EXPECTED_HMAC);
+});
+
 console.log('Build variants: PASS');
